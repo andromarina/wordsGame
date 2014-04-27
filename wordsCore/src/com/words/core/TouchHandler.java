@@ -49,11 +49,15 @@ public class TouchHandler implements View.OnTouchListener {
                 break;
 
             case MotionEvent.ACTION_UP:
-                for(LetterHolderSymbol symbol:this.scene.getStubWordSymbol().getLetterSymbols()) {
+                ArrayList<LetterHolderSymbol> holderSymbols = this.scene.getWordHolderSymbol().getLetterSymbols();
+                Word puzzleWord = this.scene.getWordSymbol().getWord();
+                for(LetterHolderSymbol symbol:holderSymbols) {
                     if (this.letterSymbol != null && this.letterSymbol.intersects(symbol)){
-                        this.letterSymbol.setX(symbol.getX());
-                        this.letterSymbol.setY(symbol.getY());
-                        break;
+                        if(puzzleWord.placed(letterSymbol.getLetter(), symbol.getPosition())) {
+                            this.letterSymbol.setX(symbol.getX());
+                            this.letterSymbol.setY(symbol.getY());
+                            break;
+                        }
                     }
                 }
 

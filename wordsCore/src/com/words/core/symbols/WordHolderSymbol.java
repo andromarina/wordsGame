@@ -42,7 +42,7 @@ public class WordHolderSymbol implements ISymbol {
         ArrayList<LetterHolderSymbol> lS = new ArrayList<LetterHolderSymbol>();
         int deltaX = this.coordX;
         for(int i = 0; i < this.lettersCount; ++i) {
-            LetterHolderSymbol letterSymbol = new LetterHolderSymbol();
+            LetterHolderSymbol letterSymbol = new LetterHolderSymbol(i);
             letterSymbol.initialize(this.context);
             if (i == 0) {
                 deltaX = calculateXCoordinate(letterSymbol.getWidth());

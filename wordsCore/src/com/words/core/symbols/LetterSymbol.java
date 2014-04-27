@@ -94,6 +94,10 @@ public class LetterSymbol implements ISymbol {
         return this.img.getWidth();
     }
 
+    public Letter getLetter() {
+        return letter;
+    }
+
     public boolean intersects(ISymbol symbol) {
         Rect letterBox = this.getBoundingBox();
         Rect symbolBox = symbol.getBoundingBox();

@@ -6,7 +6,11 @@ import com.words.core.symbols.LetterSymbol;
  * Created by mara on 4/27/14.
  */
 public interface IWordListener {
-    public boolean placed(LetterSymbol symbol);
 
+    public void placedSucceeded(Letter symbol);
+
+    public void placedFailed(Letter symbol);
+
+    public void finished();
 
 }

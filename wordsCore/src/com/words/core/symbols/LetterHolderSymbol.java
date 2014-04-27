@@ -15,13 +15,15 @@ public class LetterHolderSymbol implements ISymbol {
     private Bitmap img;
     private int coordX;
     private int coordY;
+    private int position;
 
-    public LetterHolderSymbol() {}
+    public LetterHolderSymbol(int position) {
+        this.position = position;
+    }
 
     public void initialize(Context context) {
         this.img =  BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_cloud);
     }
-
 
     public void draw(Context context, Canvas canvas) {
         canvas.drawBitmap(img, this.coordX, this.coordY, null);
@@ -40,6 +42,9 @@ public class LetterHolderSymbol implements ISymbol {
         return rect;
     }
 
+    public int getPosition() {
+        return position;
+    }
 
     public int getHeight() {
         return this.img.getHeight();

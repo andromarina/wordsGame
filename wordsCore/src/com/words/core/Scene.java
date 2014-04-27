@@ -51,7 +51,7 @@ public class Scene extends View {
         return null;
     }
 
-    public WordHolderSymbol getStubWordSymbol() {
+    public WordHolderSymbol getWordHolderSymbol() {
         for(ISymbol symbol: this.symbols) {
             if(symbol instanceof WordHolderSymbol) {
                 return (WordHolderSymbol) symbol;

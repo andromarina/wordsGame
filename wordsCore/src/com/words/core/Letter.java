@@ -5,9 +5,11 @@ package com.words.core;
  */
 public class Letter {
     private char character;
+    private int position;
 
-    public Letter(char character) {
+    public Letter(char character, int position) {
         this.character = character;
+        this.position = position;
     }
 
     public boolean isEqual(Letter otherLetter) {
@@ -22,4 +24,7 @@ public class Letter {
         return this.character;
     }
 
+    public int getPosition() {
+        return position;
+    }
 }
