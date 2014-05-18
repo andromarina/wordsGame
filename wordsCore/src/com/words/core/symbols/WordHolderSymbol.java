@@ -1,10 +1,16 @@
 package com.words.core.symbols;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.test.UiThreadTest;
 import android.util.DisplayMetrics;
+import android.view.View;
+import com.words.core.AnimationUpdate;
+import com.words.core.Scene;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -19,6 +25,7 @@ public class WordHolderSymbol implements ISymbol {
     private Context context;
     private int lettersCount;
     private ArrayList<LetterHolderSymbol> letterSymbols;
+    private ArrayList<LetterHolderSymbol> letterHolderSymbols;
 
     public WordHolderSymbol(int lettersCount) {
         this.lettersCount = lettersCount;
@@ -39,23 +46,43 @@ public class WordHolderSymbol implements ISymbol {
 
     private ArrayList<LetterHolderSymbol> createLetterSymbols() {
 
-        ArrayList<LetterHolderSymbol> lS = new ArrayList<LetterHolderSymbol>();
+        this.letterHolderSymbols = new ArrayList<LetterHolderSymbol>();
         int deltaX = this.coordX;
         for(int i = 0; i < this.lettersCount; ++i) {
-            LetterHolderSymbol letterSymbol = new LetterHolderSymbol(i);
-            letterSymbol.initialize(this.context);
+            LetterHolderSymbol letterHolderSymbol = new LetterHolderSymbol(i);
+            letterHolderSymbol.initialize(this.context);
             if (i == 0) {
-                deltaX = calculateXCoordinate(letterSymbol.getWidth());
+                deltaX = calculateXCoordinate(letterHolderSymbol.getWidth());
             }
-            letterSymbol.setX(deltaX);
+            letterHolderSymbol.setX(deltaX);
+            deltaX = deltaX + letterHolderSymbol.getWidth() + this.offset;
+            letterHolderSymbols.add(letterHolderSymbol);
+        }
+        return letterHolderSymbols;
+    }
+
+    public void animate(View view) {
+
+        for (LetterHolderSymbol letterHolderSymbol : this.letterHolderSymbols) {
+           letterHolderSymbol.animate(view);
+        }
+    }
+
+    private ArrayList<ObjectAnimator> createAnimators(View view) {
+        ArrayList<ObjectAnimator> animators = new ArrayList<ObjectAnimator>();
+
+        for (LetterHolderSymbol letterHolderSymbol : this.letterHolderSymbols) {
             Random rand = new Random();
             this.coordY = rand.nextInt(60 - this.offset) + this.offset;
-            letterSymbol.setY(this.coordY);
-            deltaX = deltaX + letterSymbol.getWidth() + this.offset;
-            lS.add(letterSymbol);
+            ObjectAnimator anim = ObjectAnimator.ofInt(letterHolderSymbol, "y", this.offset, coordY);
+            anim.setDuration(2000);
+            anim.setRepeatCount(ValueAnimator.INFINITE);
+            anim.setRepeatMode(ValueAnimator.REVERSE);
+            AnimationUpdate listener = new AnimationUpdate(view);
+            anim.addUpdateListener(listener);
+            animators.add(anim);
         }
-
-        return lS;
+        return animators;
     }
 
     @Override

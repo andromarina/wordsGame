@@ -12,7 +12,10 @@ public class LetterSymbol implements ISymbol {
     private Bitmap img;
     private int coordX = 0;
     private int coordY = 0;
+    private int savedX;
+    private int savedY;
     private Letter letter;
+    private boolean isMovable = true;
 
     public LetterSymbol(Letter letter) {
         this.letter = letter;
@@ -53,6 +56,19 @@ public class LetterSymbol implements ISymbol {
         return (float) 50.0;
     }
 
+    public void saveCoordinates() {
+        this.savedX = this.coordX;
+        this.savedY = this.coordY;
+    }
+
+    public int getSavedX() {
+        return savedX;
+    }
+
+    public int getSavedY() {
+        return savedY;
+    }
+
     public void setX(int newX) {
         this.coordX = newX;
     }
@@ -73,6 +89,14 @@ public class LetterSymbol implements ISymbol {
             return true;
         }
         return false;
+    }
+
+    public void setMovable(boolean value) {
+        this.isMovable = value;
+    }
+
+    public boolean isMovable() {
+        return isMovable;
     }
 
     public void move(int X, int Y) {

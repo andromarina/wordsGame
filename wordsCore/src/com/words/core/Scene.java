@@ -1,5 +1,7 @@
 package com.words.core;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.View;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
  * Created by mara on 3/24/14.
  */
 public class Scene extends View {
+
     private ArrayList<ISymbol> symbols;
     private Context context;
 
@@ -28,7 +31,6 @@ public class Scene extends View {
     public void addSymbol(ISymbol symbol) {
         this.symbols.add(symbol);
     }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -64,5 +66,4 @@ public class Scene extends View {
         this.symbols.clear();
     }
 
-
- }
+}

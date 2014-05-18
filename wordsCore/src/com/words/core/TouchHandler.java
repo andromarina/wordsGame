@@ -34,6 +34,7 @@ public class TouchHandler implements View.OnTouchListener {
 
                     if (symbol.contains(X,Y)){
                         this.letterSymbol = symbol;
+                        this.letterSymbol.saveCoordinates();
                         break;
                     }
                 }
@@ -41,22 +42,26 @@ public class TouchHandler implements View.OnTouchListener {
 
 
             case MotionEvent.ACTION_MOVE:
-                if (this.letterSymbol != null) {
-                    LetterSymbol symb = this.letterSymbol;
-                    symb.move(X,Y);
+                if (this.letterSymbol != null && this.letterSymbol.isMovable()) {
+                    this.letterSymbol.move(X, Y);
                 }
-
                 break;
 
             case MotionEvent.ACTION_UP:
                 ArrayList<LetterHolderSymbol> holderSymbols = this.scene.getWordHolderSymbol().getLetterSymbols();
                 Word puzzleWord = this.scene.getWordSymbol().getWord();
+
                 for(LetterHolderSymbol symbol:holderSymbols) {
                     if (this.letterSymbol != null && this.letterSymbol.intersects(symbol)){
+
                         if(puzzleWord.placed(letterSymbol.getLetter(), symbol.getPosition())) {
-                            this.letterSymbol.setX(symbol.getX());
-                            this.letterSymbol.setY(symbol.getY());
+                            symbol.attach(letterSymbol);
+                            letterSymbol.setMovable(false);
                             break;
+                        }
+                        else {
+                            this.letterSymbol.setX(letterSymbol.getSavedX());
+                            this.letterSymbol.setY(letterSymbol.getSavedY());
                         }
                     }
                 }

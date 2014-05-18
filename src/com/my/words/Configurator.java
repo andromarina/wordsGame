@@ -34,7 +34,11 @@ public class Configurator implements IWordListener{
         DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
         this.puzzleWordSymbol.shuffle(dm.widthPixels, dm.heightPixels);
         this.wordHolderSymbol.initialize(WordApplication.getContext());
+        runAnimations();
+    }
 
+    private void runAnimations() {
+        this.wordHolderSymbol.animate(WordApplication.getScene());
     }
 
     private String getPuzzleString() {
