@@ -3,7 +3,6 @@ package com.words.core.symbols;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.view.View;
 
 /**
  * Created by mara on 3/24/14.
@@ -19,8 +18,6 @@ public interface ISymbol {
     public void setX(int newX);
 
     public void setY(int newY);
-
-
 
     public boolean contains(int X, int Y);
 

@@ -8,6 +8,7 @@ import com.words.core.Letter;
 import com.words.core.Word;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -73,14 +74,31 @@ public class WordSymbol implements ISymbol {
         return word;
     }
 
-    public void shuffle(int maxX, int maxY) {
+    public void shuffle(int displayWidth, int displayHeight) {
 
-       for(LetterSymbol letterSymbol: this.letterSymbols) {
-           while(intersection(letterSymbol)== true) {
-               Point p = generateRandomPoint(letterSymbol, maxX, maxY);
-               letterSymbol.move(p.x, p.y);
-           }
-       }
+        int segmentLength = displayWidth / (letterSymbols.size());
+        int minX = 0;
+        int maxX = segmentLength;
+        ArrayList<LetterSymbol> shuffledArray = this.letterSymbols;
+        Collections.shuffle(shuffledArray);
+
+        for (LetterSymbol letterSymbol : shuffledArray) {
+            Point p = generateRandomPoint(letterSymbol, minX, maxX, displayHeight);
+            letterSymbol.move(p.x, p.y);
+            minX = maxX;
+            maxX = maxX + segmentLength;
+        }
+    }
+
+    public ArrayList<LetterSymbol> getSymbolsWithSameCharacter(LetterSymbol symbol) {
+        ArrayList<LetterSymbol> repeatedSymbols = new ArrayList<LetterSymbol>();
+        repeatedSymbols.add(symbol);
+        for (int j = 1; j < letterSymbols.size() - 1; ++j) {
+            if (symbol.getLetter().isEqual(letterSymbols.get(j).getLetter())) {
+                repeatedSymbols.add(letterSymbols.get(j));
+            }
+        }
+        return repeatedSymbols;
     }
 
     private ArrayList<LetterSymbol> createLetterSymbols() {
@@ -94,15 +112,19 @@ public class WordSymbol implements ISymbol {
         return lS;
     }
 
-    private Point generateRandomPoint(LetterSymbol symbol, int maxWidth, int maxHeight) {
+    private Point generateRandomPoint(LetterSymbol symbol, int minWidth, int maxWidth, int maxHeight) {
         Random rand = new Random();
-        int x = rand.nextInt((maxWidth - symbol.getWidth()) - symbol.getWidth()) + symbol.getWidth();
-        int y = rand.nextInt((maxHeight - symbol.getHeight()) - symbol.getHeight()) + symbol.getHeight();
+        int minX = minWidth + symbol.getWidth() / 2;
+        int maxX = maxWidth - symbol.getWidth() / 2;
+        int x = ((minX + maxX) / 2) + rand.nextInt(100);
+        int minY = (int) (maxHeight * 0.7);
+        int maxY = maxHeight - symbol.getHeight() / 2;
+        int y = minY + rand.nextInt(maxY - minY + 1);
         Point point = new Point(x,y);
         return point;
     }
 
-    private boolean intersection(LetterSymbol symbol) {
+    private boolean isOverlap(LetterSymbol symbol) {
         for (int i=0; i<this.letterSymbols.size(); ++i) {
             ISymbol toCheck = letterSymbols.get(i);
             if(toCheck == symbol) {

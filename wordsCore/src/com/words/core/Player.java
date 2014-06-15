@@ -12,24 +12,27 @@ import java.io.IOException;
 public class Player {
     private MediaPlayer mp;
 
-    public Player() {
+    public Player(Context context) {
         this.mp = new MediaPlayer();
-    }
-
-    public void playWordCompleted(Context context) {
         try {
             AssetFileDescriptor afd;
             afd = context.getAssets().openFd("TaDa.mp3");
-            mp.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+            mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             mp.prepare();
-            mp.start();
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayer.pause();
+                }
+            });
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
-
+    public void playWordCompleted() {
+        mp.start();
+    }
 }

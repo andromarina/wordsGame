@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.test.UiThreadTest;
 import android.util.DisplayMetrics;
 import android.view.View;
 import com.words.core.AnimationUpdate;
-import com.words.core.Scene;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -24,7 +22,6 @@ public class WordHolderSymbol implements ISymbol {
     private int offset = 15;
     private Context context;
     private int lettersCount;
-    private ArrayList<LetterHolderSymbol> letterSymbols;
     private ArrayList<LetterHolderSymbol> letterHolderSymbols;
 
     public WordHolderSymbol(int lettersCount) {
@@ -33,18 +30,18 @@ public class WordHolderSymbol implements ISymbol {
 
     public void initialize(Context context) {
         this.context = context;
-        this.letterSymbols = createLetterSymbols();
+        this.letterHolderSymbols = createLetterHolderSymbols();
     }
 
     @Override
     public void draw(Context context, Canvas canvas) {
 
-        for(LetterHolderSymbol letterSymbol:this.letterSymbols) {
+        for (LetterHolderSymbol letterSymbol : this.letterHolderSymbols) {
             letterSymbol.draw(context, canvas);
         }
     }
 
-    private ArrayList<LetterHolderSymbol> createLetterSymbols() {
+    private ArrayList<LetterHolderSymbol> createLetterHolderSymbols() {
 
         this.letterHolderSymbols = new ArrayList<LetterHolderSymbol>();
         int deltaX = this.coordX;
@@ -115,8 +112,8 @@ public class WordHolderSymbol implements ISymbol {
         return null;
     }
 
-    public ArrayList<LetterHolderSymbol> getLetterSymbols() {
-        return letterSymbols;
+    public ArrayList<LetterHolderSymbol> getLetterHolderSymbols() {
+        return letterHolderSymbols;
     }
 
     private int calculateXCoordinate(int width) {
