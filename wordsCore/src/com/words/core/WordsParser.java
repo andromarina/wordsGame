@@ -46,4 +46,9 @@ public class WordsParser {
         String[] splitted = puzzle.split(" ");
         return splitted;
     }
+
+    public String[] splitStringToSyllables(String input) {
+        String[] splitted = input.split("-");
+        return splitted;
+    }
 }
