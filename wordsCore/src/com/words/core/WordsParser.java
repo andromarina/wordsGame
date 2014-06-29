@@ -47,8 +47,4 @@ public class WordsParser {
         return splitted;
     }
 
-    public String[] splitStringToSyllables(String input) {
-        String[] splitted = input.split("-");
-        return splitted;
-    }
 }

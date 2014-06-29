@@ -6,37 +6,38 @@ import android.content.Context;
 import android.graphics.*;
 import android.util.Log;
 import android.view.View;
-import com.words.core.AnimationUpdate;
-import com.words.core.Letter;
-import com.words.core.R;
+import com.words.core.*;
 
 import java.util.Random;
 
 /**
  * Created by mara on 3/24/14.
  */
-public class LetterSymbol implements ISymbol {
+public class SyllabusSymbol implements ISymbol {
     private Bitmap img;
     private int coordX = 0;
     private int coordY = 0;
     private int savedX;
     private int savedY;
-    private Letter letter;
+    private Syllabus syllabus;
     private boolean isMovable = true;
     private boolean isAttached = false;
+    private Player player;
 
-    public LetterSymbol(Letter letter) {
-        this.letter = letter;
+    public SyllabusSymbol(Syllabus syllabus) {
+        this.syllabus = syllabus;
     }
 
-    public LetterSymbol(Letter letter, int coordX, int coordY) {
-        this.letter = letter;
+    public SyllabusSymbol(Syllabus syllabus, int coordX, int coordY) {
+        this.syllabus = syllabus;
         this.coordX = coordX;
         this.coordY = coordY;
     }
 
     public void initialize(Context context) {
         //selected size in Android assets Studio 70px
+        String fileName = Transliterator.convertToLatin(syllabus.getString());
+        this.player = new Player(context, fileName + ".mp3");
         Random rand = new Random();
         int number = rand.nextInt(7);
         switch (number) {
@@ -64,7 +65,10 @@ public class LetterSymbol implements ISymbol {
             default:
                 break;
         }
+    }
 
+    public void onClick() {
+        this.player.playSound();
     }
 
     @Override
@@ -74,12 +78,20 @@ public class LetterSymbol implements ISymbol {
         Log.d("DRAW", "draw called");
         Paint paint = new Paint();
         paint.setTextSize(getFontSize());
-        paint.setStrokeWidth(7);
+        paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
-        String text = Character.toString(this.letter.getCharacter());
+
+        Paint outline = new Paint();
+        outline.setAntiAlias(true);
+        outline.setTextSize(getFontSize());
+        outline.setStyle(Paint.Style.STROKE);
+        outline.setColor(Color.BLACK);
+        outline.setStrokeWidth(1);
+        String text = this.syllabus.getString();
         //TODO: handle font size
-        canvas.drawText(text, coordX + 55, coordY + 120, paint);
+        canvas.drawText(text, coordX + 40, coordY + 120, paint);
+        canvas.drawText(text, coordX + 40, coordY + 120, outline);
     }
 
     @Override
@@ -93,7 +105,7 @@ public class LetterSymbol implements ISymbol {
     }
 
     private float getFontSize() {
-        return (float) 57.0;
+        return (float) 60.0;
     }
 
     public void saveCoordinates() {
@@ -159,8 +171,8 @@ public class LetterSymbol implements ISymbol {
         return this.img.getWidth();
     }
 
-    public Letter getLetter() {
-        return letter;
+    public Syllabus getSyllabus() {
+        return this.syllabus;
     }
 
     public boolean intersects(ISymbol symbol) {

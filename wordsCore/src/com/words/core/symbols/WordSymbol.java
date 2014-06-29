@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
-import com.words.core.Letter;
+import com.words.core.Syllabus;
 import com.words.core.Word;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.Random;
  */
 public class WordSymbol implements ISymbol {
     private Word word;
-    private ArrayList<LetterSymbol> letterSymbols;
+    private ArrayList<SyllabusSymbol> syllabusSymbols;
     private Context context;
 
 
@@ -26,17 +26,17 @@ public class WordSymbol implements ISymbol {
 
     public void initialize(Context context) {
         this.context = context;
-        this.letterSymbols = createLetterSymbols();
+        this.syllabusSymbols = createSyllabusSymbols();
     }
 
-    public ArrayList<LetterSymbol> getLetterSymbols() {
-        return this.letterSymbols;
+    public ArrayList<SyllabusSymbol> getSyllabusSymbols() {
+        return this.syllabusSymbols;
     }
 
     @Override
     public void draw(Context context, Canvas canvas) {
-        for(LetterSymbol letterSymbol:this.letterSymbols) {
-            letterSymbol.draw(context, canvas);
+        for(SyllabusSymbol syllabusSymbol:this.syllabusSymbols) {
+            syllabusSymbol.draw(context, canvas);
         }
     }
 
@@ -76,43 +76,43 @@ public class WordSymbol implements ISymbol {
 
     public void shuffle(int displayWidth, int displayHeight) {
 
-        int segmentLength = displayWidth / (letterSymbols.size());
+        int segmentLength = displayWidth / (syllabusSymbols.size());
         int minX = 0;
         int maxX = segmentLength;
-        ArrayList<LetterSymbol> shuffledArray = this.letterSymbols;
+        ArrayList<SyllabusSymbol> shuffledArray = this.syllabusSymbols;
         Collections.shuffle(shuffledArray);
 
-        for (LetterSymbol letterSymbol : shuffledArray) {
-            Point p = generateRandomPoint(letterSymbol, minX, maxX, displayHeight);
-            letterSymbol.move(p.x, p.y);
+        for (SyllabusSymbol syllabusSymbol : shuffledArray) {
+            Point p = generateRandomPoint(syllabusSymbol, minX, maxX, displayHeight);
+            syllabusSymbol.move(p.x, p.y);
             minX = maxX;
             maxX = maxX + segmentLength;
         }
     }
 
-    public ArrayList<LetterSymbol> getSymbolsWithSameCharacter(LetterSymbol symbol) {
-        ArrayList<LetterSymbol> repeatedSymbols = new ArrayList<LetterSymbol>();
+    public ArrayList<SyllabusSymbol> getSymbolsWithSameCharacter(SyllabusSymbol symbol) {
+        ArrayList<SyllabusSymbol> repeatedSymbols = new ArrayList<SyllabusSymbol>();
         repeatedSymbols.add(symbol);
-        for (int j = 1; j < letterSymbols.size() - 1; ++j) {
-            if (symbol.getLetter().isEqual(letterSymbols.get(j).getLetter())) {
-                repeatedSymbols.add(letterSymbols.get(j));
+        for (int j = 1; j < syllabusSymbols.size() - 1; ++j) {
+            if (symbol.getSyllabus().isEqual(syllabusSymbols.get(j).getSyllabus())) {
+                repeatedSymbols.add(syllabusSymbols.get(j));
             }
         }
         return repeatedSymbols;
     }
 
-    private ArrayList<LetterSymbol> createLetterSymbols() {
-        ArrayList<Letter> letters = this.word.getLetters();
-        ArrayList<LetterSymbol> lS = new ArrayList<LetterSymbol>();
-        for(Letter letter:letters) {
-            LetterSymbol letterSymbol = new LetterSymbol(letter);
-            letterSymbol.initialize(this.context);
-            lS.add(letterSymbol);
+    private ArrayList<SyllabusSymbol> createSyllabusSymbols() {
+        ArrayList<Syllabus> syllabuses = this.word.getSyllabuses();
+        ArrayList<SyllabusSymbol> syllabSymb = new ArrayList<SyllabusSymbol>();
+        for(Syllabus syllabus:syllabuses) {
+            SyllabusSymbol syllabusSymbol = new SyllabusSymbol(syllabus);
+            syllabusSymbol.initialize(this.context);
+            syllabSymb.add(syllabusSymbol);
         }
-        return lS;
+        return syllabSymb;
     }
 
-    private Point generateRandomPoint(LetterSymbol symbol, int minWidth, int maxWidth, int maxHeight) {
+    private Point generateRandomPoint(SyllabusSymbol symbol, int minWidth, int maxWidth, int maxHeight) {
         Random rand = new Random();
         int minX = minWidth + symbol.getWidth() / 2;
         int maxX = maxWidth - symbol.getWidth() / 2;
@@ -124,9 +124,9 @@ public class WordSymbol implements ISymbol {
         return point;
     }
 
-    private boolean isOverlap(LetterSymbol symbol) {
-        for (int i=0; i<this.letterSymbols.size(); ++i) {
-            ISymbol toCheck = letterSymbols.get(i);
+    private boolean isOverlap(SyllabusSymbol symbol) {
+        for (int i=0; i<this.syllabusSymbols.size(); ++i) {
+            ISymbol toCheck = syllabusSymbols.get(i);
             if(toCheck == symbol) {
                 continue;
             }

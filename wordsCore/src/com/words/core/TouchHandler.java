@@ -2,8 +2,8 @@ package com.words.core;
 
 import android.view.MotionEvent;
 import android.view.View;
-import com.words.core.symbols.LetterHolderSymbol;
-import com.words.core.symbols.LetterSymbol;
+import com.words.core.symbols.SyllabusHolderSymbol;
+import com.words.core.symbols.SyllabusSymbol;
 import com.words.core.symbols.WordHolderSymbol;
 
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import java.util.ArrayList;
  */
 public class TouchHandler implements View.OnTouchListener {
     private Scene scene;
-    private LetterSymbol letterSymbol;
-    private LetterHolderSymbol letterHolderSymbol;
+    private SyllabusSymbol syllabusSymbol;
+    private SyllabusHolderSymbol syllabusHolderSymbol;
 
     public TouchHandler(Scene scene) {
        this.scene = scene;
@@ -31,19 +31,19 @@ public class TouchHandler implements View.OnTouchListener {
         switch (eventAction) {
 
             case MotionEvent.ACTION_DOWN: // touch down so check if the finger is on a symbol
-                handleOnLetterClick(X, Y);
-                handleOnLetterHolderDown(X, Y);
+                handleOnSyllabusClick(X, Y);
+                handleOnSyllabusHolderDown(X, Y);
                 break;
 
 
             case MotionEvent.ACTION_MOVE:
-                if (this.letterSymbol != null && this.letterSymbol.isMovable()) {
-                    this.letterSymbol.move(X, Y);
+                if (this.syllabusSymbol != null && this.syllabusSymbol.isMovable()) {
+                    this.syllabusSymbol.move(X, Y);
                 }
                 break;
 
             case MotionEvent.ACTION_UP:
-                handleLetterPlacement();
+                handleSyllabusPlacement();
 
                 break;
         }
@@ -52,49 +52,50 @@ public class TouchHandler implements View.OnTouchListener {
         return true;
     }
 
-    private void handleLetterPlacement() {
-        ArrayList<LetterHolderSymbol> holderSymbols = this.scene.getWordHolderSymbol().getLetterHolderSymbols();
+    private void handleSyllabusPlacement() {
+        ArrayList<SyllabusHolderSymbol> holderSymbols = this.scene.getWordHolderSymbol().getSyllabusHolderSymbols();
         Word puzzleWord = this.scene.getWordSymbol().getWord();
 
-        for (LetterHolderSymbol holderSymbol : holderSymbols) {
-            if (this.letterSymbol != null && this.letterSymbol.intersects(holderSymbol)) {
+        for (SyllabusHolderSymbol holderSymbol : holderSymbols) {
+            if (this.syllabusSymbol != null && this.syllabusSymbol.intersects(holderSymbol)) {
 
-                if (puzzleWord.placed(letterSymbol.getLetter(), holderSymbol.getPosition())) {
-                    holderSymbol.attachToAnimation(letterSymbol);
-                    letterSymbol.setX(holderSymbol.getX());
-                    letterSymbol.setMovable(false);
+                if (puzzleWord.placed(syllabusSymbol.getSyllabus(), holderSymbol.getPosition())) {
+                    holderSymbol.attachToAnimation(syllabusSymbol);
+                    syllabusSymbol.setX(holderSymbol.getX());
+                    syllabusSymbol.setMovable(false);
                     break;
                 } else {
-                    this.letterSymbol.setX(letterSymbol.getSavedX());
-                    this.letterSymbol.setY(letterSymbol.getSavedY());
+                    this.syllabusSymbol.setX(syllabusSymbol.getSavedX());
+                    this.syllabusSymbol.setY(syllabusSymbol.getSavedY());
                 }
             }
         }
     }
 
-    private void handleOnLetterClick(int X, int Y) {
-        this.letterSymbol = null;
-        ArrayList<LetterSymbol> symbols = this.scene.getWordSymbol().getLetterSymbols();
-        for (LetterSymbol symbol : symbols) {
+    private void handleOnSyllabusClick(int X, int Y) {
+        this.syllabusSymbol = null;
+        ArrayList<SyllabusSymbol> symbols = this.scene.getWordSymbol().getSyllabusSymbols();
+        for (SyllabusSymbol symbol : symbols) {
 
             if (symbol.contains(X, Y)) {
-                this.letterSymbol = symbol;
-                this.letterSymbol.saveCoordinates();
+                this.syllabusSymbol = symbol;
+                this.syllabusSymbol.saveCoordinates();
+                this.syllabusSymbol.onClick();
                 break;
             }
         }
     }
 
-    private void handleOnLetterHolderDown(int X, int Y) {
-        this.letterHolderSymbol = null;
+    private void handleOnSyllabusHolderDown(int X, int Y) {
+        this.syllabusHolderSymbol = null;
         WordHolderSymbol wordHolderSymbol = this.scene.getWordHolderSymbol();
-        ArrayList<LetterHolderSymbol> symbols = wordHolderSymbol.getLetterHolderSymbols();
+        ArrayList<SyllabusHolderSymbol> symbols = wordHolderSymbol.getSyllabusHolderSymbols();
         for (int i = 0; i < symbols.size(); ++i) {
             if (symbols.get(i).contains(X, Y)) {
-                this.letterHolderSymbol = symbols.get(i);
-                LetterSymbol letterSymbol = this.letterHolderSymbol.getHintLetterSymbol();
-                if (letterSymbol != null) {
-                    letterSymbol.animate(this.scene);
+                this.syllabusHolderSymbol = symbols.get(i);
+                SyllabusSymbol syllabusSymbol = this.syllabusHolderSymbol.getHintSyllabusSymbol();
+                if (syllabusSymbol != null) {
+                    syllabusSymbol.animate(this.scene);
                 }
                 break;
             }

@@ -12,11 +12,11 @@ import java.io.IOException;
 public class Player {
     private MediaPlayer mp;
 
-    public Player(Context context) {
+    public Player(Context context, String fileName) {
         this.mp = new MediaPlayer();
         try {
             AssetFileDescriptor afd;
-            afd = context.getAssets().openFd("TaDa.mp3");
+            afd = context.getAssets().openFd(fileName);
             mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             mp.prepare();
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -32,7 +32,7 @@ public class Player {
         }
     }
 
-    public void playWordCompleted() {
+    public void playSound() {
         mp.start();
     }
 }

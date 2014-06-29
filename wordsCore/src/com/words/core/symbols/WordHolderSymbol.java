@@ -21,57 +21,57 @@ public class WordHolderSymbol implements ISymbol {
     private int coordY = 10;
     private int offset = 15;
     private Context context;
-    private int lettersCount;
-    private ArrayList<LetterHolderSymbol> letterHolderSymbols;
+    private int syllabusesCount;
+    private ArrayList<SyllabusHolderSymbol> syllabusHolderSymbols;
 
-    public WordHolderSymbol(int lettersCount) {
-        this.lettersCount = lettersCount;
+    public WordHolderSymbol(int syllabusesCount) {
+        this.syllabusesCount = syllabusesCount;
     }
 
     public void initialize(Context context) {
         this.context = context;
-        this.letterHolderSymbols = createLetterHolderSymbols();
+        this.syllabusHolderSymbols = createSyllabusHolderSymbols();
     }
 
     @Override
     public void draw(Context context, Canvas canvas) {
 
-        for (LetterHolderSymbol letterSymbol : this.letterHolderSymbols) {
-            letterSymbol.draw(context, canvas);
+        for (SyllabusHolderSymbol syllabusSymbol : this.syllabusHolderSymbols) {
+            syllabusSymbol.draw(context, canvas);
         }
     }
 
-    private ArrayList<LetterHolderSymbol> createLetterHolderSymbols() {
+    private ArrayList<SyllabusHolderSymbol> createSyllabusHolderSymbols() {
 
-        this.letterHolderSymbols = new ArrayList<LetterHolderSymbol>();
+        this.syllabusHolderSymbols = new ArrayList<SyllabusHolderSymbol>();
         int deltaX = this.coordX;
-        for(int i = 0; i < this.lettersCount; ++i) {
-            LetterHolderSymbol letterHolderSymbol = new LetterHolderSymbol(i);
-            letterHolderSymbol.initialize(this.context);
+        for(int i = 0; i < this.syllabusesCount; ++i) {
+            SyllabusHolderSymbol syllabusHolderSymbol = new SyllabusHolderSymbol(i);
+            syllabusHolderSymbol.initialize(this.context);
             if (i == 0) {
-                deltaX = calculateXCoordinate(letterHolderSymbol.getWidth());
+                deltaX = calculateXCoordinate(syllabusHolderSymbol.getWidth());
             }
-            letterHolderSymbol.setX(deltaX);
-            deltaX = deltaX + letterHolderSymbol.getWidth() + this.offset;
-            letterHolderSymbols.add(letterHolderSymbol);
+            syllabusHolderSymbol.setX(deltaX);
+            deltaX = deltaX + syllabusHolderSymbol.getWidth() + this.offset;
+            syllabusHolderSymbols.add(syllabusHolderSymbol);
         }
-        return letterHolderSymbols;
+        return syllabusHolderSymbols;
     }
 
     public void animate(View view) {
 
-        for (LetterHolderSymbol letterHolderSymbol : this.letterHolderSymbols) {
-           letterHolderSymbol.animate(view);
+        for (SyllabusHolderSymbol syllabusHolderSymbol : this.syllabusHolderSymbols) {
+            syllabusHolderSymbol.animate(view);
         }
     }
 
     private ArrayList<ObjectAnimator> createAnimators(View view) {
         ArrayList<ObjectAnimator> animators = new ArrayList<ObjectAnimator>();
 
-        for (LetterHolderSymbol letterHolderSymbol : this.letterHolderSymbols) {
+        for (SyllabusHolderSymbol syllabusHolderSymbol : this.syllabusHolderSymbols) {
             Random rand = new Random();
             this.coordY = rand.nextInt(60 - this.offset) + this.offset;
-            ObjectAnimator anim = ObjectAnimator.ofInt(letterHolderSymbol, "y", this.offset, coordY);
+            ObjectAnimator anim = ObjectAnimator.ofInt(syllabusHolderSymbol, "y", this.offset, coordY);
             anim.setDuration(2000);
             anim.setRepeatCount(ValueAnimator.INFINITE);
             anim.setRepeatMode(ValueAnimator.REVERSE);
@@ -112,12 +112,12 @@ public class WordHolderSymbol implements ISymbol {
         return null;
     }
 
-    public ArrayList<LetterHolderSymbol> getLetterHolderSymbols() {
-        return letterHolderSymbols;
+    public ArrayList<SyllabusHolderSymbol> getSyllabusHolderSymbols() {
+        return syllabusHolderSymbols;
     }
 
     private int calculateXCoordinate(int width) {
-        int wordLength = (width + this.offset) * this.lettersCount - this.offset;
+        int wordLength = (width + this.offset) * this.syllabusesCount - this.offset;
         DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
         int maxWidth = dm.widthPixels;
         int X = (maxWidth - wordLength)/2;

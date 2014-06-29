@@ -5,8 +5,8 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 import com.words.core.*;
-import com.words.core.symbols.LetterHolderSymbol;
-import com.words.core.symbols.LetterSymbol;
+import com.words.core.symbols.SyllabusHolderSymbol;
+import com.words.core.symbols.SyllabusSymbol;
 import com.words.core.symbols.WordHolderSymbol;
 import com.words.core.symbols.WordSymbol;
 
@@ -19,13 +19,13 @@ public class Configurator implements IWordListener{
     private Word puzzleWord;
     private WordSymbol puzzleWordSymbol;
     private WordHolderSymbol wordHolderSymbol;
-    private Player player;
+    private Player playerWordCompleted;
     private static int solvedWordsCounter = 0;
 
 
     public void initialize() {
-        this.player = new Player(WordApplication.getContext());
         createWord();
+        createPlayers();
         addSymbolsToScene();
         initializeWord();
         runAnimations();
@@ -37,15 +37,15 @@ public class Configurator implements IWordListener{
         this.puzzleWord = null;
         this.puzzleWordSymbol = null;
         this.wordHolderSymbol = null;
-        this.player = null;
+        this.playerWordCompleted = null;
     }
 
     @Override
-    public void placedSucceeded(Letter symbol) {
+    public void placedSucceeded(Syllabus symbol) {
     }
 
     @Override
-    public void placedFailed(Letter symbol) {
+    public void placedFailed(Syllabus symbol) {
     }
 
     public void saveProgress() {
@@ -58,7 +58,7 @@ public class Configurator implements IWordListener{
 
     @Override
     public void finished() {
-        this.player.playWordCompleted();
+        this.playerWordCompleted.playSound();
         ++solvedWordsCounter;
         saveProgress();
         if (levelFinished()) {
@@ -81,12 +81,16 @@ public class Configurator implements IWordListener{
         this.wordHolderSymbol = new WordHolderSymbol(this.puzzleWord.getSize());
     }
 
-    private void bindLetterSymbolsToWordHolderSymbol() {
-        ArrayList<LetterHolderSymbol> letterHolderSymbols = this.wordHolderSymbol.getLetterHolderSymbols();
-        for (int i = 0; i < letterHolderSymbols.size(); ++i) {
-            LetterHolderSymbol letterHolderSymbol = letterHolderSymbols.get(i);
-            LetterSymbol puzzleLetterSymbol = this.puzzleWordSymbol.getLetterSymbols().get(i);
-            letterHolderSymbol.bindLetterSymbols(this.puzzleWordSymbol.getSymbolsWithSameCharacter(puzzleLetterSymbol));
+    private void createPlayers() {
+        this.playerWordCompleted = new Player(WordApplication.getContext(), "TaDa.mp3");
+    }
+
+    private void bindSyllabusSymbolsToWordHolderSymbol() {
+        ArrayList<SyllabusHolderSymbol> syllabusHolderSymbols = this.wordHolderSymbol.getSyllabusHolderSymbols();
+        for (int i = 0; i < syllabusHolderSymbols.size(); ++i) {
+            SyllabusHolderSymbol syllabusHolderSymbol = syllabusHolderSymbols.get(i);
+            SyllabusSymbol puzzleSyllabusSymbol = this.puzzleWordSymbol.getSyllabusSymbols().get(i);
+            syllabusHolderSymbol.bindSyllabusSymbols(this.puzzleWordSymbol.getSymbolsWithSameCharacter(puzzleSyllabusSymbol));
         }
     }
 
@@ -94,9 +98,8 @@ public class Configurator implements IWordListener{
         this.puzzleWordSymbol.initialize(WordApplication.getContext());
         DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
         this.wordHolderSymbol.initialize(WordApplication.getContext());
-        bindLetterSymbolsToWordHolderSymbol();
+        bindSyllabusSymbolsToWordHolderSymbol();
         this.puzzleWordSymbol.shuffle(dm.widthPixels, dm.heightPixels);
-
     }
 
     private void runAnimations() {

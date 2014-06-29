@@ -17,15 +17,15 @@ import java.util.Random;
 /**
  * Created by mara on 4/22/14.
  */
-public class LetterHolderSymbol implements ISymbol {
+public class SyllabusHolderSymbol implements ISymbol {
     private Bitmap img;
     private int coordX;
     private int coordY;
     private int position;
     private ISymbol attachedSymbol;
-    private ArrayList<LetterSymbol> bindedLetterSymbols;
+    private ArrayList<SyllabusSymbol> bindedSyllabusSymbols;
 
-    public LetterHolderSymbol(int position) {
+    public SyllabusHolderSymbol(int position) {
         this.position = position;
     }
 
@@ -101,22 +101,22 @@ public class LetterHolderSymbol implements ISymbol {
         anim.start();
     }
 
-    public void attachToAnimation(LetterSymbol symbol) {
+    public void attachToAnimation(SyllabusSymbol symbol) {
         this.attachedSymbol = symbol;
         symbol.setAttached();
     }
 
-    public void bindLetterSymbols(ArrayList<LetterSymbol> letterSymbols) {
-        this.bindedLetterSymbols = new ArrayList<LetterSymbol>();
-        for (LetterSymbol letterSymbol : letterSymbols) {
-            this.bindedLetterSymbols.add(letterSymbol);
+    public void bindSyllabusSymbols(ArrayList<SyllabusSymbol> syllabusSymbols) {
+        this.bindedSyllabusSymbols = new ArrayList<SyllabusSymbol>();
+        for (SyllabusSymbol syllabusSymbol : syllabusSymbols) {
+            this.bindedSyllabusSymbols.add(syllabusSymbol);
         }
     }
 
-    public LetterSymbol getHintLetterSymbol() {
-        for (LetterSymbol letterSymbol : this.bindedLetterSymbols) {
-            if (!letterSymbol.isAttached()) {
-                return letterSymbol;
+    public SyllabusSymbol getHintSyllabusSymbol() {
+        for (SyllabusSymbol syllabusSymbol : this.bindedSyllabusSymbols) {
+            if (!syllabusSymbol.isAttached()) {
+                return syllabusSymbol;
             }
         }
         return null;
