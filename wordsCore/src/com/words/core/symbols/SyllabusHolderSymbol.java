@@ -20,7 +20,7 @@ import java.util.Random;
 public class SyllabusHolderSymbol implements ISymbol {
     private Bitmap img;
     private int coordX;
-    private int coordY;
+    private int coordY = 30;
     private int position;
     private ISymbol attachedSymbol;
     private ArrayList<SyllabusSymbol> bindedSyllabusSymbols;
@@ -30,7 +30,7 @@ public class SyllabusHolderSymbol implements ISymbol {
     }
 
     public void initialize(Context context) {
-        this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_cloud);
+        this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_blue);
     }
 
     public void draw(Context context, Canvas canvas) {
@@ -51,7 +51,6 @@ public class SyllabusHolderSymbol implements ISymbol {
         return false;
     }
 
-    @Override
     public Rect getBoundingBox() {
         int height = getHeight();
         int weight = getWidth();
@@ -84,7 +83,7 @@ public class SyllabusHolderSymbol implements ISymbol {
     public void setY(int newY) {
         this.coordY = newY;
         if (this.attachedSymbol != null) {
-            this.attachedSymbol.setY(newY - 30);
+            this.attachedSymbol.setY(newY);
         }
     }
 
@@ -128,11 +127,9 @@ public class SyllabusHolderSymbol implements ISymbol {
         Random rand = new Random();
         this.coordY = rand.nextInt(100 - offset) + offset;
         ObjectAnimator anim = ObjectAnimator.ofInt(this, "y", offset, coordY);
-        anim.setDuration(2000);
+        anim.setDuration(1500);
         anim.setRepeatCount(ValueAnimator.INFINITE);
         anim.setRepeatMode(ValueAnimator.REVERSE);
-        int delay = rand.nextInt(500 - 100) + 100;
-        // anim.setStartDelay(delay);
         AnimationUpdate listener = new AnimationUpdate(view);
         anim.addUpdateListener(listener);
         return anim;

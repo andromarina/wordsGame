@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Words</string>
     <string name="level_finished">Level Finished!!!</string>
+    <string name="game_finished">Game Finished!!!</string>
 </resources>

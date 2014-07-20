@@ -15,18 +15,14 @@ public class Syllabus {
 
     public boolean isEqual(Syllabus otherSyllabus) {
 
-        if(!otherSyllabus.getString().equals(this.syllabusString)) {
-           return false;
+        if (!otherSyllabus.getString().equals(this.syllabusString)) {
+            return false;
         }
         return true;
     }
 
     public String getString() {
         return this.syllabusString;
-    }
-
-    public int getPosition() {
-        return position;
     }
 
 }

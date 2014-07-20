@@ -1,0 +1,41 @@
+{
+  "game": {
+    "levels": [
+      {
+        "id": 1,
+        "puzzles": [
+          {
+            "id": 1,
+            "word": "ко-ро-ва",
+            "sound": "ko-ro-va",
+            "picture": "ic_cow"
+          },
+          {
+            "id": 2,
+            "word": "ку-ри-ца",
+            "sound": "ku-ri-ca",
+            "picture": "ic_chiken"
+          },
+          {
+            "id": 3,
+            "word": "ло-ша-дка",
+            "sound": "lo-sha-dka",
+            "picture": "ic_horse"
+          },
+          {
+            "id": 4,
+            "word": "по-ро-сё-нок",
+            "sound": "po-ro-sjo-nok",
+            "picture": "ic_pig"
+          },
+          {
+            "id": 5,
+            "word": "ли-си-ца",
+            "sound": "li-si-ca",
+            "picture": "ic_fox"
+          }
+        ]
+      }
+    ]
+  }
+}

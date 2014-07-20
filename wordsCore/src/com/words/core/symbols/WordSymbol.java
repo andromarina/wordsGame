@@ -18,10 +18,12 @@ public class WordSymbol implements ISymbol {
     private Word word;
     private ArrayList<SyllabusSymbol> syllabusSymbols;
     private Context context;
+    private String[] soundNames;
 
 
-    public WordSymbol(Word word) {
+    public WordSymbol(Word word, String soundNames) {
         this.word = word;
+        this.soundNames = soundNames.split("-");
     }
 
     public void initialize(Context context) {
@@ -35,7 +37,7 @@ public class WordSymbol implements ISymbol {
 
     @Override
     public void draw(Context context, Canvas canvas) {
-        for(SyllabusSymbol syllabusSymbol:this.syllabusSymbols) {
+        for (SyllabusSymbol syllabusSymbol : this.syllabusSymbols) {
             syllabusSymbol.draw(context, canvas);
         }
     }
@@ -104,8 +106,9 @@ public class WordSymbol implements ISymbol {
     private ArrayList<SyllabusSymbol> createSyllabusSymbols() {
         ArrayList<Syllabus> syllabuses = this.word.getSyllabuses();
         ArrayList<SyllabusSymbol> syllabSymb = new ArrayList<SyllabusSymbol>();
-        for(Syllabus syllabus:syllabuses) {
-            SyllabusSymbol syllabusSymbol = new SyllabusSymbol(syllabus);
+        for (int i = 0; i < syllabuses.size(); ++i) {
+            Syllabus syllabus = syllabuses.get(i);
+            SyllabusSymbol syllabusSymbol = new SyllabusSymbol(syllabus, soundNames[i]);
             syllabusSymbol.initialize(this.context);
             syllabSymb.add(syllabusSymbol);
         }
@@ -114,23 +117,23 @@ public class WordSymbol implements ISymbol {
 
     private Point generateRandomPoint(SyllabusSymbol symbol, int minWidth, int maxWidth, int maxHeight) {
         Random rand = new Random();
-        int minX = minWidth + symbol.getWidth() / 2;
-        int maxX = maxWidth - symbol.getWidth() / 2;
-        int x = ((minX + maxX) / 2) + rand.nextInt(100);
-        int minY = (int) (maxHeight * 0.7);
+        int minX = minWidth + symbol.getWidth() / 3;
+        int maxX = (int) (maxWidth * 0.2);
+        int x = ((minX + maxX) / 2) + rand.nextInt(50);
+        int minY = (int) (maxHeight * 0.4);
         int maxY = maxHeight - symbol.getHeight() / 2;
         int y = minY + rand.nextInt(maxY - minY + 1);
-        Point point = new Point(x,y);
+        Point point = new Point(x, y);
         return point;
     }
 
     private boolean isOverlap(SyllabusSymbol symbol) {
-        for (int i=0; i<this.syllabusSymbols.size(); ++i) {
+        for (int i = 0; i < this.syllabusSymbols.size(); ++i) {
             ISymbol toCheck = syllabusSymbols.get(i);
-            if(toCheck == symbol) {
+            if (toCheck == symbol) {
                 continue;
             }
-            if(symbol.intersects(toCheck)) {
+            if (symbol.intersects(toCheck)) {
                 return true;
             }
         }

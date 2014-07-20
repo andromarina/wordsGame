@@ -1,7 +1,5 @@
 package com.words.core;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.View;
@@ -35,27 +33,23 @@ public class Scene extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        for (ISymbol symbol: symbols) {
+        for (ISymbol symbol : symbols) {
             symbol.draw(this.context, canvas);
         }
     }
 
-    public ArrayList<ISymbol> getAllSymbols() {
-        return this.symbols;
-    }
-
     public WordSymbol getWordSymbol() {
-        for(ISymbol symbol: this.symbols) {
-           if(symbol instanceof WordSymbol) {
-               return (WordSymbol) symbol;
-           }
+        for (ISymbol symbol : this.symbols) {
+            if (symbol instanceof WordSymbol) {
+                return (WordSymbol) symbol;
+            }
         }
         return null;
     }
 
     public WordHolderSymbol getWordHolderSymbol() {
-        for(ISymbol symbol: this.symbols) {
-            if(symbol instanceof WordHolderSymbol) {
+        for (ISymbol symbol : this.symbols) {
+            if (symbol instanceof WordHolderSymbol) {
                 return (WordHolderSymbol) symbol;
             }
         }

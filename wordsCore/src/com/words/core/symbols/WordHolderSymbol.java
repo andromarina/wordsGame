@@ -1,25 +1,21 @@
 package com.words.core.symbols;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.View;
-import com.words.core.AnimationUpdate;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by mara on 3/24/14.
  */
 public class WordHolderSymbol implements ISymbol {
     private int coordX = 0;
-    private int coordY = 10;
-    private int offset = 15;
+    private int coordY = 30;
+    private int offset = 30;
     private Context context;
     private int syllabusesCount;
     private ArrayList<SyllabusHolderSymbol> syllabusHolderSymbols;
@@ -45,7 +41,7 @@ public class WordHolderSymbol implements ISymbol {
 
         this.syllabusHolderSymbols = new ArrayList<SyllabusHolderSymbol>();
         int deltaX = this.coordX;
-        for(int i = 0; i < this.syllabusesCount; ++i) {
+        for (int i = 0; i < this.syllabusesCount; ++i) {
             SyllabusHolderSymbol syllabusHolderSymbol = new SyllabusHolderSymbol(i);
             syllabusHolderSymbol.initialize(this.context);
             if (i == 0) {
@@ -63,23 +59,6 @@ public class WordHolderSymbol implements ISymbol {
         for (SyllabusHolderSymbol syllabusHolderSymbol : this.syllabusHolderSymbols) {
             syllabusHolderSymbol.animate(view);
         }
-    }
-
-    private ArrayList<ObjectAnimator> createAnimators(View view) {
-        ArrayList<ObjectAnimator> animators = new ArrayList<ObjectAnimator>();
-
-        for (SyllabusHolderSymbol syllabusHolderSymbol : this.syllabusHolderSymbols) {
-            Random rand = new Random();
-            this.coordY = rand.nextInt(60 - this.offset) + this.offset;
-            ObjectAnimator anim = ObjectAnimator.ofInt(syllabusHolderSymbol, "y", this.offset, coordY);
-            anim.setDuration(2000);
-            anim.setRepeatCount(ValueAnimator.INFINITE);
-            anim.setRepeatMode(ValueAnimator.REVERSE);
-            AnimationUpdate listener = new AnimationUpdate(view);
-            anim.addUpdateListener(listener);
-            animators.add(anim);
-        }
-        return animators;
     }
 
     @Override
@@ -120,7 +99,7 @@ public class WordHolderSymbol implements ISymbol {
         int wordLength = (width + this.offset) * this.syllabusesCount - this.offset;
         DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
         int maxWidth = dm.widthPixels;
-        int X = (maxWidth - wordLength)/2;
+        int X = (maxWidth - wordLength) / 2;
         return X;
     }
 }

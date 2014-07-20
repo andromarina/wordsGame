@@ -6,9 +6,10 @@ import android.content.Context;
 import android.graphics.*;
 import android.util.Log;
 import android.view.View;
-import com.words.core.*;
-
-import java.util.Random;
+import com.words.core.AnimationUpdate;
+import com.words.core.Player;
+import com.words.core.R;
+import com.words.core.Syllabus;
 
 /**
  * Created by mara on 3/24/14.
@@ -22,10 +23,13 @@ public class SyllabusSymbol implements ISymbol {
     private Syllabus syllabus;
     private boolean isMovable = true;
     private boolean isAttached = false;
+    private boolean isTouched = false;
     private Player player;
+    private String soundName;
 
-    public SyllabusSymbol(Syllabus syllabus) {
+    public SyllabusSymbol(Syllabus syllabus, String soundName) {
         this.syllabus = syllabus;
+        this.soundName = soundName;
     }
 
     public SyllabusSymbol(Syllabus syllabus, int coordX, int coordY) {
@@ -35,63 +39,45 @@ public class SyllabusSymbol implements ISymbol {
     }
 
     public void initialize(Context context) {
-        //selected size in Android assets Studio 70px
-        String fileName = Transliterator.convertToLatin(syllabus.getString());
-        this.player = new Player(context, fileName + ".mp3");
-        Random rand = new Random();
-        int number = rand.nextInt(7);
-        switch (number) {
-            case (0):
-                this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_owl_red);
-                break;
-            case (1):
-                this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_owl_blue);
-                break;
-            case (2):
-                this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_owl_green);
-                break;
-            case (3):
-                this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_owl_light_blue);
-                break;
-            case (4):
-                this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_owl_orange);
-                break;
-            case (5):
-                this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_owl_pink);
-                break;
-            case (6):
-                this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_owl_yellow);
-                break;
-            default:
-                break;
-        }
+        //selected size in Android assets Studio 75px
+        this.player = new Player(context, this.soundName + ".mp3");
+        this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_yellow);
     }
 
     public void onClick() {
         this.player.playSound();
     }
 
+    public void onTouchStart() {
+        this.isTouched = true;
+    }
+
+    public void onTouchFinish() {
+        this.isTouched = false;
+    }
+
     @Override
     public void draw(Context context, Canvas canvas) {
-
+        if (isTouched == true) {
+            this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_yellow_pressed);
+        } else {
+            this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_yellow);
+        }
         canvas.drawBitmap(img, this.coordX, this.coordY, null);
         Log.d("DRAW", "draw called");
         Paint paint = new Paint();
         paint.setTextSize(getFontSize());
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
-        paint.setColor(Color.WHITE);
+        paint.setColor(Color.BLACK);
 
-        Paint outline = new Paint();
-        outline.setAntiAlias(true);
-        outline.setTextSize(getFontSize());
-        outline.setStyle(Paint.Style.STROKE);
-        outline.setColor(Color.BLACK);
-        outline.setStrokeWidth(1);
         String text = this.syllabus.getString();
         //TODO: handle font size
-        canvas.drawText(text, coordX + 40, coordY + 120, paint);
-        canvas.drawText(text, coordX + 40, coordY + 120, outline);
+        int testWidth = (int) paint.measureText(text);
+        int textHeight = (int) paint.getTextSize();
+        int x = getWidth() / 2 - testWidth / 2;
+        int y = getHeight() / 2 + textHeight / 4;
+        canvas.drawText(text, coordX + x, coordY + y, paint);
     }
 
     @Override
@@ -105,7 +91,7 @@ public class SyllabusSymbol implements ISymbol {
     }
 
     private float getFontSize() {
-        return (float) 60.0;
+        return (float) 70.0;
     }
 
     public void saveCoordinates() {

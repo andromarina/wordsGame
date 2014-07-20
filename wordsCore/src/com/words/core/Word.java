@@ -14,7 +14,7 @@ public class Word {
 
         this.etalonWord = new ArrayList<Syllabus>();
         String[] syllabuses = puzzleWord.split("-");
-        for(int i = 0; i < syllabuses.length; ++i){
+        for (int i = 0; i < syllabuses.length; ++i) {
             Syllabus syllabus = new Syllabus(syllabuses[i], i);
             this.etalonWord.add(syllabus);
         }
@@ -30,21 +30,8 @@ public class Word {
         this.word[position] = syllabus;
     }
 
-//    public boolean isEqual(Word otherWord) {
-//        ArrayList<Letter> otherLetters = otherWord.getSyllabuses();
-//        if (this.etalonWord.size() != otherLetters.size()) {
-//            return false;
-//        }
-//        for (int i = 0; i < this.etalonWord.size(); ++i) {
-//            if (this.etalonWord.get(i) != otherLetters.get(i)) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-
     public int getSize() {
-       return this.etalonWord.size();
+        return this.etalonWord.size();
     }
 
     public ArrayList<Syllabus> getSyllabuses() {
@@ -52,8 +39,8 @@ public class Word {
     }
 
     private boolean isFinished() {
-        for(Syllabus syllabus: this.word) {
-            if(syllabus == null) {
+        for (Syllabus syllabus : this.word) {
+            if (syllabus == null) {
                 return false;
             }
         }
@@ -61,34 +48,33 @@ public class Word {
     }
 
     public boolean placed(Syllabus syllabus, int position) {
-        if(canPlace(syllabus, position)) {
+        if (canPlace(syllabus, position)) {
             insertSyllabus(syllabus, position);
             risePlaceSucceeded(syllabus);
             if (isFinished()) {
                 riseFinished();
             }
             return true;
-        }
-        else {
+        } else {
             risePlaceFailed(syllabus);
             return false;
         }
     }
 
     private void risePlaceSucceeded(Syllabus syllabus) {
-        if(this.listener != null) {
+        if (this.listener != null) {
             this.listener.placedSucceeded(syllabus);
         }
     }
 
     private void risePlaceFailed(Syllabus syllabus) {
-        if(this.listener != null) {
+        if (this.listener != null) {
             this.listener.placedFailed(syllabus);
         }
     }
 
     private void riseFinished() {
-        if(this.listener != null) {
+        if (this.listener != null) {
             this.listener.finished();
         }
     }

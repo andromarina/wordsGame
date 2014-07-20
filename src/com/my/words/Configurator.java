@@ -5,10 +5,10 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 import com.words.core.*;
-import com.words.core.symbols.SyllabusHolderSymbol;
-import com.words.core.symbols.SyllabusSymbol;
-import com.words.core.symbols.WordHolderSymbol;
-import com.words.core.symbols.WordSymbol;
+import com.words.core.gameentities.Game;
+import com.words.core.gameentities.Level;
+import com.words.core.gameentities.WordsParser;
+import com.words.core.symbols.*;
 
 import java.util.ArrayList;
 
@@ -19,11 +19,17 @@ public class Configurator implements IWordListener{
     private Word puzzleWord;
     private WordSymbol puzzleWordSymbol;
     private WordHolderSymbol wordHolderSymbol;
+    private PuzzleImageSymbol puzzleImageSymbol;
     private Player playerWordCompleted;
-    private static int solvedWordsCounter = 0;
-
+    private static int solvedWordsCounter = 1;
+    private static int levelsCounter = 1;
+    private Level level;
+    private Game game;
 
     public void initialize() {
+        WordsParser wordsParser = new WordsParser(WordApplication.getContext());
+        this.game = wordsParser.getGame();
+        this.level = this.game.getLevelById(levelsCounter);
         createWord();
         createPlayers();
         addSymbolsToScene();
@@ -49,23 +55,23 @@ public class Configurator implements IWordListener{
     }
 
     public void saveProgress() {
-        Preferences.saveProgress(solvedWordsCounter);
+        Preferences.saveProgress(levelsCounter, solvedWordsCounter);
     }
 
     public void restoreProgress() {
-        solvedWordsCounter = Preferences.getProgress();
+        solvedWordsCounter = Preferences.getProgressWord();
+        levelsCounter = Preferences.getProgressLevel();
     }
 
     @Override
     public void finished() {
         this.playerWordCompleted.playSound();
-        ++solvedWordsCounter;
-        saveProgress();
-        if (levelFinished()) {
-            Toast levelFinished = Toast.makeText(WordApplication.getContext(), R.string.level_finished, 3);
-            levelFinished.show();
+        if (this.level.isCompleted(solvedWordsCounter)) {
+            finishLevel();
             return;
         }
+        ++solvedWordsCounter;
+        saveProgress();
         Scene scene = WordApplication.getScene();
         scene.removeAllSymbols();
         createWord();
@@ -75,10 +81,14 @@ public class Configurator implements IWordListener{
     }
 
     private void createWord() {
-        this.puzzleWord = getPuzzleWordsForLevel().get(solvedWordsCounter);
+        String str = this.level.getPuzzleAttributesById(solvedWordsCounter).getWord();
+        this.puzzleWord = new Word(str);
         this.puzzleWord.addListener(this);
-        this.puzzleWordSymbol = new WordSymbol(this.puzzleWord);
+        String soundNamesString = this.level.getPuzzleAttributesById(solvedWordsCounter).getWordSounds();
+        this.puzzleWordSymbol = new WordSymbol(this.puzzleWord, soundNamesString);
         this.wordHolderSymbol = new WordHolderSymbol(this.puzzleWord.getSize());
+        String pictureName = this.level.getPuzzleAttributesById(solvedWordsCounter).getPictureName();
+        this.puzzleImageSymbol = new PuzzleImageSymbol(pictureName);
     }
 
     private void createPlayers() {
@@ -106,31 +116,27 @@ public class Configurator implements IWordListener{
         // this.wordHolderSymbol.animate(WordApplication.getScene());
     }
 
-    private ArrayList<Word> getPuzzleWordsForLevel() {
-        WordsParser wordsParser = new WordsParser(WordApplication.getContext());
-        String[] puzzleStrings = wordsParser.getPuzzleStrings();
-        ArrayList<Word> puzzleWords = new ArrayList<Word>();
-        for (String str : puzzleStrings) {
-            Word word = new Word(str);
-            puzzleWords.add(word);
-        }
-        return puzzleWords;
-    }
-
     private void addSymbolsToScene() {
         Scene scene = WordApplication.getScene();
         scene.addSymbol(this.wordHolderSymbol);
         scene.addSymbol(this.puzzleWordSymbol);
+        scene.addSymbol(this.puzzleImageSymbol);
     }
 
-    private boolean levelFinished() {
-        if (solvedWordsCounter < getPuzzleWordsForLevel().size()) {
-            return false;
+    private void finishLevel() {
+        Toast levelFinished = Toast.makeText(WordApplication.getContext(), R.string.level_finished, 3);
+        levelFinished.show();
+        solvedWordsCounter = 1;
+        if (this.game.isFinished(levelsCounter)) {
+            Toast gameFinished = Toast.makeText(WordApplication.getContext(), R.string.game_finished, 3);
+            gameFinished.show();
+            levelsCounter = 1;
+            saveProgress();
+            deinitialize();
+            return;
         }
-        solvedWordsCounter = 0;
+        ++levelsCounter;
         saveProgress();
-        return true;
+        this.level = this.game.getLevelById(levelsCounter);
     }
-
-
 }
