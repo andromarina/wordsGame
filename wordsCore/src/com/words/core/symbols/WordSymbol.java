@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
+import com.words.core.IPlayer;
 import com.words.core.Syllabus;
 import com.words.core.Word;
 
@@ -26,9 +27,9 @@ public class WordSymbol implements ISymbol {
         this.soundNames = soundNames.split("-");
     }
 
-    public void initialize(Context context) {
+    public void initialize(Context context, IPlayer player) {
         this.context = context;
-        this.syllabusSymbols = createSyllabusSymbols();
+        this.syllabusSymbols = createSyllabusSymbols(player);
     }
 
     public ArrayList<SyllabusSymbol> getSyllabusSymbols() {
@@ -103,12 +104,18 @@ public class WordSymbol implements ISymbol {
         return repeatedSymbols;
     }
 
-    private ArrayList<SyllabusSymbol> createSyllabusSymbols() {
+    public void pronounceWord() {
+        for (SyllabusSymbol symbol : this.syllabusSymbols) {
+            symbol.play();
+        }
+    }
+
+    private ArrayList<SyllabusSymbol> createSyllabusSymbols(IPlayer player) {
         ArrayList<Syllabus> syllabuses = this.word.getSyllabuses();
         ArrayList<SyllabusSymbol> syllabSymb = new ArrayList<SyllabusSymbol>();
         for (int i = 0; i < syllabuses.size(); ++i) {
             Syllabus syllabus = syllabuses.get(i);
-            SyllabusSymbol syllabusSymbol = new SyllabusSymbol(syllabus, soundNames[i]);
+            SyllabusSymbol syllabusSymbol = new SyllabusSymbol(syllabus, soundNames[i], player);
             syllabusSymbol.initialize(this.context);
             syllabSymb.add(syllabusSymbol);
         }

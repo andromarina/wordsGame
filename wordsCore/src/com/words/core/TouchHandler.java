@@ -90,7 +90,7 @@ public class TouchHandler implements View.OnTouchListener {
         for (SyllabusSymbol symbol : symbols) {
             if (symbol.contains(X, Y)) {
                 this.syllabusSymbol = symbol;
-                this.syllabusSymbol.onClick();
+                this.syllabusSymbol.play();
                 break;
             }
         }
@@ -113,7 +113,7 @@ public class TouchHandler implements View.OnTouchListener {
     private boolean isAccidentMovement() {
         long currentTime = Calendar.getInstance().getTimeInMillis();
         int difference = (int) (currentTime - this.touchStartTime);
-        if (difference < 500) {
+        if (difference < 300) {
             return true;
         }
         return false;

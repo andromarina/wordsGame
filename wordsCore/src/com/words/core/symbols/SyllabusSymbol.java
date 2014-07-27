@@ -7,7 +7,7 @@ import android.graphics.*;
 import android.util.Log;
 import android.view.View;
 import com.words.core.AnimationUpdate;
-import com.words.core.Player;
+import com.words.core.IPlayer;
 import com.words.core.R;
 import com.words.core.Syllabus;
 
@@ -24,28 +24,18 @@ public class SyllabusSymbol implements ISymbol {
     private boolean isMovable = true;
     private boolean isAttached = false;
     private boolean isTouched = false;
-    private Player player;
+    private IPlayer player;
     private String soundName;
 
-    public SyllabusSymbol(Syllabus syllabus, String soundName) {
+    public SyllabusSymbol(Syllabus syllabus, String soundName, IPlayer player) {
         this.syllabus = syllabus;
         this.soundName = soundName;
-    }
-
-    public SyllabusSymbol(Syllabus syllabus, int coordX, int coordY) {
-        this.syllabus = syllabus;
-        this.coordX = coordX;
-        this.coordY = coordY;
+        this.player = player;
     }
 
     public void initialize(Context context) {
         //selected size in Android assets Studio 75px
-        this.player = new Player(context, this.soundName + ".mp3");
         this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_yellow);
-    }
-
-    public void onClick() {
-        this.player.playSound();
     }
 
     public void onTouchStart() {
@@ -175,6 +165,10 @@ public class SyllabusSymbol implements ISymbol {
 
     public void setAttached() {
         this.isAttached = true;
+    }
+
+    public void play() {
+        this.player.addToPlaylist(this.soundName);
     }
 
     public boolean isAttached() {

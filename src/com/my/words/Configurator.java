@@ -20,18 +20,22 @@ public class Configurator implements IWordListener{
     private WordSymbol puzzleWordSymbol;
     private WordHolderSymbol wordHolderSymbol;
     private PuzzleImageSymbol puzzleImageSymbol;
-    private Player playerWordCompleted;
     private static int solvedWordsCounter = 1;
     private static int levelsCounter = 1;
     private Level level;
     private Game game;
+    private Player player;
 
     public void initialize() {
         WordsParser wordsParser = new WordsParser(WordApplication.getContext());
         this.game = wordsParser.getGame();
         this.level = this.game.getLevelById(levelsCounter);
+
+        if (this.player == null) {
+            this.player = new Player(WordApplication.getContext());
+        }
         createWord();
-        createPlayers();
+
         addSymbolsToScene();
         initializeWord();
         runAnimations();
@@ -43,7 +47,7 @@ public class Configurator implements IWordListener{
         this.puzzleWord = null;
         this.puzzleWordSymbol = null;
         this.wordHolderSymbol = null;
-        this.playerWordCompleted = null;
+        this.player = null;
     }
 
     @Override
@@ -65,7 +69,8 @@ public class Configurator implements IWordListener{
 
     @Override
     public void finished() {
-        this.playerWordCompleted.playSound();
+        this.player.addToPlaylist("TaDa");
+
         if (this.level.isCompleted(solvedWordsCounter)) {
             finishLevel();
             return;
@@ -91,10 +96,6 @@ public class Configurator implements IWordListener{
         this.puzzleImageSymbol = new PuzzleImageSymbol(pictureName);
     }
 
-    private void createPlayers() {
-        this.playerWordCompleted = new Player(WordApplication.getContext(), "TaDa.mp3");
-    }
-
     private void bindSyllabusSymbolsToWordHolderSymbol() {
         ArrayList<SyllabusHolderSymbol> syllabusHolderSymbols = this.wordHolderSymbol.getSyllabusHolderSymbols();
         for (int i = 0; i < syllabusHolderSymbols.size(); ++i) {
@@ -105,10 +106,11 @@ public class Configurator implements IWordListener{
     }
 
     private void initializeWord() {
-        this.puzzleWordSymbol.initialize(WordApplication.getContext());
+        this.puzzleWordSymbol.initialize(WordApplication.getContext(), this.player);
         DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
         this.wordHolderSymbol.initialize(WordApplication.getContext());
         bindSyllabusSymbolsToWordHolderSymbol();
+        this.puzzleWordSymbol.pronounceWord();
         this.puzzleWordSymbol.shuffle(dm.widthPixels, dm.heightPixels);
     }
 
