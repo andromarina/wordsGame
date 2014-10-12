@@ -17,15 +17,13 @@ public class PuzzleImageSymbol implements ISymbol {
     private int offset = 15;
     private String pictureName;
 
-    public PuzzleImageSymbol(String pictureName) {
+    public PuzzleImageSymbol(String pictureName, Context context) {
         this.pictureName = pictureName;
+        initializeImage(context);
     }
 
     @Override
     public void draw(Context context, Canvas canvas) {
-        Resources res = context.getResources();
-        int drawableId = res.getIdentifier("drawable/" + pictureName, "drawable", context.getPackageName());
-        this.img = BitmapFactory.decodeResource(res, drawableId);
         int x = canvas.getWidth() - this.img.getWidth() - offset;
         int y = canvas.getHeight() - this.img.getHeight() - offset;
         canvas.drawBitmap(img, x, y, null);
@@ -59,5 +57,11 @@ public class PuzzleImageSymbol implements ISymbol {
     @Override
     public Rect getBoundingBox() {
         return null;
+    }
+
+    private void initializeImage(Context context) {
+        Resources res = context.getResources();
+        int drawableId = res.getIdentifier("drawable/" + pictureName, "drawable", context.getPackageName());
+        this.img = BitmapFactory.decodeResource(res, drawableId);
     }
 }

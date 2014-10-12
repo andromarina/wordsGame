@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
-import android.view.View;
 
 import java.util.ArrayList;
 
@@ -52,13 +51,6 @@ public class WordHolderSymbol implements ISymbol {
             syllabusHolderSymbols.add(syllabusHolderSymbol);
         }
         return syllabusHolderSymbols;
-    }
-
-    public void animate(View view) {
-
-        for (SyllabusHolderSymbol syllabusHolderSymbol : this.syllabusHolderSymbols) {
-            syllabusHolderSymbol.animate(view);
-        }
     }
 
     @Override

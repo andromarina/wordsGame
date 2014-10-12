@@ -1,9 +1,11 @@
 package com.words.core;
 
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 import com.words.core.symbols.SyllabusHolderSymbol;
 import com.words.core.symbols.SyllabusSymbol;
+import com.words.core.symbols.WordSymbol;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,9 +16,10 @@ import java.util.Calendar;
 public class TouchHandler implements View.OnTouchListener {
     private Scene scene;
     private SyllabusSymbol syllabusSymbol;
-    private SyllabusHolderSymbol syllabusHolderSymbol;
     private long touchStartTime;
     private boolean isClick = false;
+    private int Xprev;
+    private int Yprev;
 
     public TouchHandler(Scene scene) {
        this.scene = scene;
@@ -34,13 +37,23 @@ public class TouchHandler implements View.OnTouchListener {
             case MotionEvent.ACTION_DOWN: // touch down so check if the finger is on a symbol
                 isClick = true;
                 this.touchStartTime = Calendar.getInstance().getTimeInMillis();
+                Xprev = X;
+                Yprev = Y;
                 handleOnSyllabusTouch(X, Y);
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 isClick = false;
                 if (this.syllabusSymbol != null && this.syllabusSymbol.isMovable()) {
-                    this.syllabusSymbol.move(X, Y);
+                    Rect oldBox = this.syllabusSymbol.getBoundingBox();
+                    int dX = X - Xprev;
+                    int dY = Y - Yprev;
+                    this.syllabusSymbol.move(dX, dY);
+                    Xprev = X;
+                    Yprev = Y;
+                    Rect newBox = this.syllabusSymbol.getBoundingBox();
+                    newBox.union(oldBox);
+                    v.invalidate(newBox);
                 }
                 break;
 
@@ -56,10 +69,11 @@ public class TouchHandler implements View.OnTouchListener {
                     handleOnSyllabusClick(X, Y);
                 }
                 handleSyllabusPlacement();
+                v.invalidate();
                 break;
         }
         // redraw the canvas
-        v.invalidate();
+        //v.invalidate();
         return true;
     }
 
@@ -86,8 +100,9 @@ public class TouchHandler implements View.OnTouchListener {
 
     private void handleOnSyllabusClick(int X, int Y) {
         this.syllabusSymbol = null;
-        ArrayList<SyllabusSymbol> symbols = this.scene.getWordSymbol().getSyllabusSymbols();
-        for (SyllabusSymbol symbol : symbols) {
+        WordSymbol wordSymbol = this.scene.getWordSymbol();
+        ArrayList<SyllabusSymbol> syllabusSymbols = wordSymbol.getSyllabusSymbols();
+        for (SyllabusSymbol symbol : syllabusSymbols) {
             if (symbol.contains(X, Y)) {
                 this.syllabusSymbol = symbol;
                 this.syllabusSymbol.play();
@@ -98,8 +113,9 @@ public class TouchHandler implements View.OnTouchListener {
 
     private void handleOnSyllabusTouch(int X, int Y) {
         this.syllabusSymbol = null;
-        ArrayList<SyllabusSymbol> symbols = this.scene.getWordSymbol().getSyllabusSymbols();
-        for (SyllabusSymbol symbol : symbols) {
+        WordSymbol wordSymbol = this.scene.getWordSymbol();
+        ArrayList<SyllabusSymbol> syllabusSymbols = wordSymbol.getSyllabusSymbols();
+        for (SyllabusSymbol symbol : syllabusSymbols) {
 
             if (symbol.contains(X, Y)) {
                 this.syllabusSymbol = symbol;
@@ -111,11 +127,11 @@ public class TouchHandler implements View.OnTouchListener {
     }
 
     private boolean isAccidentMovement() {
-        long currentTime = Calendar.getInstance().getTimeInMillis();
-        int difference = (int) (currentTime - this.touchStartTime);
-        if (difference < 300) {
-            return true;
-        }
+//        long currentTime = Calendar.getInstance().getTimeInMillis();
+//        int difference = (int) (currentTime - this.touchStartTime);
+//        if (difference < 300) {
+//            return true;
+//        }
         return false;
     }
 

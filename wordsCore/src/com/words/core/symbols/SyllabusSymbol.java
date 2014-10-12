@@ -31,6 +31,7 @@ public class SyllabusSymbol implements ISymbol {
         this.syllabus = syllabus;
         this.soundName = soundName;
         this.player = player;
+
     }
 
     public void initialize(Context context) {
@@ -48,11 +49,11 @@ public class SyllabusSymbol implements ISymbol {
 
     @Override
     public void draw(Context context, Canvas canvas) {
-        if (isTouched == true) {
-            this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_yellow_pressed);
-        } else {
-            this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_yellow);
-        }
+//        if (isTouched == true) {
+//            this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_yellow_pressed);
+//        } else {
+//            this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_yellow);
+//        }
         canvas.drawBitmap(img, this.coordX, this.coordY, null);
         Log.d("DRAW", "draw called");
         Paint paint = new Paint();
@@ -127,9 +128,9 @@ public class SyllabusSymbol implements ISymbol {
         return isMovable;
     }
 
-    public void move(int X, int Y) {
-        setX(X - getWidth() / 2);
-        setY(Y - getHeight() / 2);
+    public void move(int dX, int dY) {
+        setX(dX + coordX);
+        setY(dY + coordY);
     }
 
     public Rect getBoundingBox() {
@@ -159,7 +160,7 @@ public class SyllabusSymbol implements ISymbol {
     }
 
     public void animate(View view) {
-        ObjectAnimator anim = createAnimator(view);
+        ObjectAnimator anim = scaleAnimation(view);
         anim.start();
     }
 
@@ -175,15 +176,15 @@ public class SyllabusSymbol implements ISymbol {
         return isAttached;
     }
 
-    private ObjectAnimator createAnimator(View view) {
+    private ObjectAnimator scaleAnimation(View view) {
 
         int savedY = coordY;
         this.coordY = coordY + 30;
         ObjectAnimator anim = ObjectAnimator.ofInt(this, "y", coordY, savedY);
-        anim.setDuration(200);
-        anim.setRepeatCount(3);
+        anim.setDuration(5000);
+        anim.setRepeatCount(25);
         anim.setRepeatMode(ValueAnimator.REVERSE);
-        AnimationUpdate listener = new AnimationUpdate(view);
+        AnimationUpdate listener = new AnimationUpdate(view, getBoundingBox());
         anim.addUpdateListener(listener);
         return anim;
     }

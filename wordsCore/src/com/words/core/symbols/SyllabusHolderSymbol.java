@@ -1,18 +1,13 @@
 package com.words.core.symbols;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.view.View;
-import com.words.core.AnimationUpdate;
 import com.words.core.R;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by mara on 4/22/14.
@@ -95,10 +90,10 @@ public class SyllabusHolderSymbol implements ISymbol {
         return coordY;
     }
 
-    public void animate(View view) {
+  /*  public void animate(View view) {
         ObjectAnimator anim = createAnimator(view);
         anim.start();
-    }
+    }*/
 
     public void attachToAnimation(SyllabusSymbol symbol) {
         this.attachedSymbol = symbol;
@@ -121,7 +116,7 @@ public class SyllabusHolderSymbol implements ISymbol {
         return null;
     }
 
-    private ObjectAnimator createAnimator(View view) {
+  /*  private ObjectAnimator createAnimator(View view) {
 
         int offset = 50;
         Random rand = new Random();
@@ -130,8 +125,8 @@ public class SyllabusHolderSymbol implements ISymbol {
         anim.setDuration(1500);
         anim.setRepeatCount(ValueAnimator.INFINITE);
         anim.setRepeatMode(ValueAnimator.REVERSE);
-        AnimationUpdate listener = new AnimationUpdate(view);
+        AnimationUpdate listener = new AnimationUpdate(view,);
         anim.addUpdateListener(listener);
         return anim;
-    }
+    }*/
 }

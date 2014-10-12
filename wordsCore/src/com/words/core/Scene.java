@@ -21,8 +21,6 @@ public class Scene extends View {
         super(context);
         this.context = context;
         this.symbols = new ArrayList<ISymbol>();
-        TouchHandler touchHandler = new TouchHandler(this);
-        setOnTouchListener(touchHandler);
         setBackgroundResource(R.drawable.backgr);
     }
 
