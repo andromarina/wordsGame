@@ -24,38 +24,47 @@ public class Configurator implements IWordListener{
     private static int levelsCounter = 1;
     private Level level;
     private Game game;
-    private Player player;
+    private WordPlayer player;
+    private ObjectPlayer objectPlayer;
+    private Scene scene;
 
     public void initialize() {
         WordsParser wordsParser = new WordsParser(WordApplication.getContext());
         this.game = wordsParser.getGame();
         this.level = this.game.getLevelById(levelsCounter);
+        this.scene = WordApplication.getScene();
 
         if (this.player == null) {
-            this.player = new Player(WordApplication.getContext());
+            this.player = new WordPlayer(WordApplication.getContext());
+        }
+
+        if (this.objectPlayer == null) {
+            this.objectPlayer = new ObjectPlayer(WordApplication.getContext());
         }
         createWord();
-
+        TouchHandler touchHandler = new TouchHandler(this.scene);
+        this.scene.setOnTouchListener(touchHandler);
         addSymbolsToScene();
         initializeWord();
-        runAnimations();
     }
 
     public void deinitialize() {
-        Scene scene = WordApplication.getScene();
         scene.removeAllSymbols();
         this.puzzleWord = null;
         this.puzzleWordSymbol = null;
         this.wordHolderSymbol = null;
         this.player = null;
+        this.scene.setOnTouchListener(null);
     }
 
     @Override
     public void placedSucceeded(Syllabus symbol) {
+
     }
 
     @Override
     public void placedFailed(Syllabus symbol) {
+
     }
 
     public void saveProgress() {
@@ -69,7 +78,7 @@ public class Configurator implements IWordListener{
 
     @Override
     public void finished() {
-        this.player.addToPlaylist("TaDa");
+        this.player.addToPlaylist("TaDa", null);
 
         if (this.level.isCompleted(solvedWordsCounter)) {
             finishLevel();
@@ -77,12 +86,10 @@ public class Configurator implements IWordListener{
         }
         ++solvedWordsCounter;
         saveProgress();
-        Scene scene = WordApplication.getScene();
         scene.removeAllSymbols();
         createWord();
         addSymbolsToScene();
         initializeWord();
-        runAnimations();
     }
 
     private void createWord() {
@@ -93,7 +100,8 @@ public class Configurator implements IWordListener{
         this.puzzleWordSymbol = new WordSymbol(this.puzzleWord, soundNamesString);
         this.wordHolderSymbol = new WordHolderSymbol(this.puzzleWord.getSize());
         String pictureName = this.level.getPuzzleAttributesById(solvedWordsCounter).getPictureName();
-        this.puzzleImageSymbol = new PuzzleImageSymbol(pictureName);
+        String objectSoundString = this.level.getPuzzleAttributesById(solvedWordsCounter).getObjectSound();
+        this.puzzleImageSymbol = new PuzzleImageSymbol(pictureName, WordApplication.getContext(), this.objectPlayer, objectSoundString);
     }
 
     private void bindSyllabusSymbolsToWordHolderSymbol() {
@@ -106,20 +114,15 @@ public class Configurator implements IWordListener{
     }
 
     private void initializeWord() {
-        this.puzzleWordSymbol.initialize(WordApplication.getContext(), this.player);
+        this.puzzleWordSymbol.initialize(WordApplication.getContext(), this.player, this.scene);
         DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
         this.wordHolderSymbol.initialize(WordApplication.getContext());
         bindSyllabusSymbolsToWordHolderSymbol();
-        this.puzzleWordSymbol.pronounceWord();
+        this.puzzleWordSymbol.presentWord();
         this.puzzleWordSymbol.shuffle(dm.widthPixels, dm.heightPixels);
     }
 
-    private void runAnimations() {
-        // this.wordHolderSymbol.animate(WordApplication.getScene());
-    }
-
     private void addSymbolsToScene() {
-        Scene scene = WordApplication.getScene();
         scene.addSymbol(this.wordHolderSymbol);
         scene.addSymbol(this.puzzleWordSymbol);
         scene.addSymbol(this.puzzleImageSymbol);

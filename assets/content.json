@@ -7,32 +7,37 @@
           {
             "id": 1,
             "word": "ко-ро-ва",
-            "sound": "ko-ro-va",
-            "picture": "ic_cow"
+            "spelling": "ko-ro-va",
+            "picture": "ic_cow",
+            "sound":"cow.wav"
           },
           {
             "id": 2,
             "word": "ку-ри-ца",
-            "sound": "ku-ri-ca",
-            "picture": "ic_chiken"
+            "spelling": "ku-ri-ca",
+            "picture": "ic_chiken",
+            "sound":""
           },
           {
             "id": 3,
             "word": "ло-ша-дка",
-            "sound": "lo-sha-dka",
-            "picture": "ic_horse"
+            "spelling": "lo-sha-dka",
+            "picture": "ic_horse",
+            "sound":""
           },
           {
             "id": 4,
             "word": "по-ро-сё-нок",
-            "sound": "po-ro-sjo-nok",
-            "picture": "ic_pig"
+            "spelling": "po-ro-sjo-nok",
+            "picture": "ic_pig",
+            "sound":""
           },
           {
             "id": 5,
             "word": "ли-си-ца",
-            "sound": "li-si-ca",
-            "picture": "ic_fox"
+            "spelling": "li-si-ca",
+            "picture": "ic_fox",
+            "sound":""
           }
         ]
       }

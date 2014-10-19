@@ -1,20 +1,21 @@
 package com.words.core.symbols;
 
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.*;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
-import android.view.View;
-import com.words.core.AnimationUpdate;
 import com.words.core.IPlayer;
+import com.words.core.IPlayerListener;
 import com.words.core.R;
 import com.words.core.Syllabus;
 
 /**
  * Created by mara on 3/24/14.
  */
-public class SyllabusSymbol implements ISymbol {
+public class SyllabusSymbol implements ISymbol, IPlayerListener {
+
+    private BitmapDrawable bitmapDrawable;
     private Bitmap img;
     private int coordX = 0;
     private int coordY = 0;
@@ -26,17 +27,23 @@ public class SyllabusSymbol implements ISymbol {
     private boolean isTouched = false;
     private IPlayer player;
     private String soundName;
+    private Paint textPaint;
+    private ValueAnimator animator;
 
     public SyllabusSymbol(Syllabus syllabus, String soundName, IPlayer player) {
         this.syllabus = syllabus;
         this.soundName = soundName;
         this.player = player;
-
     }
 
-    public void initialize(Context context) {
+    public void initialize(Context context, ValueAnimator animator) {
         //selected size in Android assets Studio 75px
         this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_yellow);
+        this.bitmapDrawable = new BitmapDrawable(context.getResources(), img);
+        createPaintText();
+        setAlpha(0);
+        this.textPaint.setAlpha(0);
+        this.animator = animator;
     }
 
     public void onTouchStart() {
@@ -54,21 +61,18 @@ public class SyllabusSymbol implements ISymbol {
 //        } else {
 //            this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_yellow);
 //        }
-        canvas.drawBitmap(img, this.coordX, this.coordY, null);
+        this.bitmapDrawable.setBounds(getBoundingBox());
+        this.bitmapDrawable.draw(canvas);
+        // canvas.drawBitmap(img, this.coordX, this.coordY, null);
         Log.d("DRAW", "draw called");
-        Paint paint = new Paint();
-        paint.setTextSize(getFontSize());
-        paint.setStyle(Paint.Style.FILL);
-        paint.setAntiAlias(true);
-        paint.setColor(Color.BLACK);
 
         String text = this.syllabus.getString();
         //TODO: handle font size
-        int testWidth = (int) paint.measureText(text);
-        int textHeight = (int) paint.getTextSize();
+        int testWidth = (int) this.textPaint.measureText(text);
+        int textHeight = (int) this.textPaint.getTextSize();
         int x = getWidth() / 2 - testWidth / 2;
         int y = getHeight() / 2 + textHeight / 4;
-        canvas.drawText(text, coordX + x, coordY + y, paint);
+        canvas.drawText(text, coordX + x, coordY + y, this.textPaint);
     }
 
     @Override
@@ -81,8 +85,14 @@ public class SyllabusSymbol implements ISymbol {
         return this.coordY;
     }
 
-    private float getFontSize() {
-        return (float) 70.0;
+    public void setAlpha(int value) {
+        Log.d("Words", "Alpha is " + value);
+        this.bitmapDrawable.setAlpha(value);
+        this.textPaint.setAlpha(value);
+    }
+
+    public void animate() {
+        this.animator.start();
     }
 
     public void saveCoordinates() {
@@ -141,11 +151,11 @@ public class SyllabusSymbol implements ISymbol {
     }
 
     public int getHeight() {
-        return this.img.getHeight();
+        return this.bitmapDrawable.getBitmap().getHeight();
     }
 
     public int getWidth() {
-        return this.img.getWidth();
+        return this.bitmapDrawable.getBitmap().getWidth();
     }
 
     public Syllabus getSyllabus() {
@@ -159,33 +169,33 @@ public class SyllabusSymbol implements ISymbol {
         return collision;
     }
 
-    public void animate(View view) {
-        ObjectAnimator anim = scaleAnimation(view);
-        anim.start();
-    }
-
     public void setAttached() {
         this.isAttached = true;
     }
 
     public void play() {
-        this.player.addToPlaylist(this.soundName);
+        this.player.addToPlaylist(this.soundName, this);
     }
 
     public boolean isAttached() {
         return isAttached;
     }
 
-    private ObjectAnimator scaleAnimation(View view) {
 
-        int savedY = coordY;
-        this.coordY = coordY + 30;
-        ObjectAnimator anim = ObjectAnimator.ofInt(this, "y", coordY, savedY);
-        anim.setDuration(5000);
-        anim.setRepeatCount(25);
-        anim.setRepeatMode(ValueAnimator.REVERSE);
-        AnimationUpdate listener = new AnimationUpdate(view, getBoundingBox());
-        anim.addUpdateListener(listener);
-        return anim;
+    private float getFontSize() {
+        return (float) 70.0;
+    }
+
+    private void createPaintText() {
+        this.textPaint = new Paint();
+        this.textPaint.setTextSize(getFontSize());
+        this.textPaint.setStyle(Paint.Style.FILL);
+        this.textPaint.setAntiAlias(true);
+        this.textPaint.setColor(Color.BLACK);
+    }
+
+    @Override
+    public void onSoundStart() {
+        animate();
     }
 }

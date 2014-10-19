@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.view.View;
 import com.words.core.symbols.ISymbol;
+import com.words.core.symbols.PuzzleImageSymbol;
 import com.words.core.symbols.WordHolderSymbol;
 import com.words.core.symbols.WordSymbol;
 
@@ -49,6 +50,15 @@ public class Scene extends View {
         for (ISymbol symbol : this.symbols) {
             if (symbol instanceof WordHolderSymbol) {
                 return (WordHolderSymbol) symbol;
+            }
+        }
+        return null;
+    }
+
+    public PuzzleImageSymbol getPuzzleImageSymbol() {
+        for (ISymbol symbol : this.symbols) {
+            if (symbol instanceof PuzzleImageSymbol) {
+                return (PuzzleImageSymbol) symbol;
             }
         }
         return null;

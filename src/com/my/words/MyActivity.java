@@ -17,7 +17,6 @@ public class MyActivity extends Activity {
         this.configurator = WordApplication.getConfigurator();
         this.configurator.restoreProgress();
         this.configurator.initialize();
-
     }
 
     @Override

@@ -8,12 +8,14 @@ public class PuzzleAttributes {
     private String word;
     private String wordSounds;
     private String pictureName;
+    private String objectSound;
 
-    public PuzzleAttributes(int id, String word, String wordSounds, String pictureName) {
+    public PuzzleAttributes(int id, String word, String wordSounds, String pictureName, String objectSound) {
         this.id = id;
         this.word = word;
         this.wordSounds = wordSounds;
         this.pictureName = pictureName;
+        this.objectSound = objectSound;
     }
 
     public int getId() {
@@ -30,5 +32,9 @@ public class PuzzleAttributes {
 
     public String getPictureName() {
         return pictureName;
+    }
+
+    public String getObjectSound() {
+        return objectSound;
     }
 }

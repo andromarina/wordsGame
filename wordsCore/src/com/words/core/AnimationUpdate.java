@@ -1,25 +1,25 @@
 package com.words.core;
 
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.graphics.Rect;
 import android.view.View;
+import com.words.core.symbols.SyllabusSymbol;
 
 /**
  * Created by mara on 5/18/14.
  */
-public class AnimationUpdate implements ObjectAnimator.AnimatorUpdateListener {
+public class AnimationUpdate implements ValueAnimator.AnimatorUpdateListener {
     private View view;
-    private Rect dirty;
+    private SyllabusSymbol symbol;
 
-    public AnimationUpdate(View view, Rect dirty) {
+    public AnimationUpdate(View view, SyllabusSymbol symbol) {
         this.view = view;
-        this.dirty = dirty;
+        this.symbol = symbol;
     }
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        view.invalidate(dirty);
+        this.symbol.setAlpha((Integer) animation.getAnimatedValue());
+        view.invalidate(this.symbol.getBoundingBox());
     }
 
 }

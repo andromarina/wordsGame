@@ -11,29 +11,42 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by mara on 4/27/14.
  */
-public class Player implements MediaPlayer.OnCompletionListener, IPlayer {
+public class WordPlayer implements MediaPlayer.OnCompletionListener, IPlayer {
     private MediaPlayer mp;
-    private Queue<String> playlist = new LinkedBlockingQueue<String>();
+    private Queue<SoundListenerPair> playlist = new LinkedBlockingQueue<SoundListenerPair>();
     private Context context;
     private boolean idle = true;
 
-    public Player(Context context) {
+    public WordPlayer(Context context) {
         this.mp = new MediaPlayer();
         this.mp.setOnCompletionListener(this);
         this.context = context;
     }
 
-    @Override
-    public void addToPlaylist(String soundName) {
-        if (this.idle) {
-            play(soundName);
-        } else {
-            this.playlist.add(soundName);
+    private class SoundListenerPair {
+        public String soundName;
+        public IPlayerListener listener;
+
+        public SoundListenerPair(String soundName, IPlayerListener listener) {
+            this.soundName = soundName;
+            this.listener = listener;
         }
     }
 
-    private void play(String soundName) {
+    @Override
+    public void addToPlaylist(String soundName, IPlayerListener listener) {
+        if (this.idle) {
+            play(soundName, listener);
+        } else {
+            this.playlist.add(new SoundListenerPair(soundName, listener));
+        }
+    }
+
+    private void play(String soundName, IPlayerListener listener) {
         preparePlayer(soundName);
+        if (listener != null) {
+            listener.onSoundStart();
+        }
         mp.start();
         this.idle = false;
     }
@@ -46,9 +59,9 @@ public class Player implements MediaPlayer.OnCompletionListener, IPlayer {
         if (this.playlist.isEmpty()) {
             return;
         }
-        String next = this.playlist.peek();
+        SoundListenerPair next = this.playlist.peek();
         this.playlist.poll();
-        play(next);
+        play(next.soundName, next.listener);
     }
 
     private void preparePlayer(String fileName) {

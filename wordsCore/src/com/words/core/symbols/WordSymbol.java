@@ -1,12 +1,13 @@
 package com.words.core.symbols;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
-import com.words.core.IPlayer;
-import com.words.core.Syllabus;
-import com.words.core.Word;
+import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import com.words.core.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +19,6 @@ import java.util.Random;
 public class WordSymbol implements ISymbol {
     private Word word;
     private ArrayList<SyllabusSymbol> syllabusSymbols;
-    private Context context;
     private String[] soundNames;
 
 
@@ -27,9 +27,8 @@ public class WordSymbol implements ISymbol {
         this.soundNames = soundNames.split("-");
     }
 
-    public void initialize(Context context, IPlayer player) {
-        this.context = context;
-        this.syllabusSymbols = createSyllabusSymbols(player);
+    public void initialize(Context context, IPlayer player, Scene scene) {
+        this.syllabusSymbols = createSyllabusSymbols(context, player, scene);
     }
 
     public ArrayList<SyllabusSymbol> getSyllabusSymbols() {
@@ -104,19 +103,20 @@ public class WordSymbol implements ISymbol {
         return repeatedSymbols;
     }
 
-    public void pronounceWord() {
+    public void presentWord() {
         for (SyllabusSymbol symbol : this.syllabusSymbols) {
             symbol.play();
         }
     }
 
-    private ArrayList<SyllabusSymbol> createSyllabusSymbols(IPlayer player) {
+    private ArrayList<SyllabusSymbol> createSyllabusSymbols(Context context, IPlayer player, Scene scene) {
         ArrayList<Syllabus> syllabuses = this.word.getSyllabuses();
         ArrayList<SyllabusSymbol> syllabSymb = new ArrayList<SyllabusSymbol>();
         for (int i = 0; i < syllabuses.size(); ++i) {
             Syllabus syllabus = syllabuses.get(i);
             SyllabusSymbol syllabusSymbol = new SyllabusSymbol(syllabus, soundNames[i], player);
-            syllabusSymbol.initialize(this.context);
+            ValueAnimator animator = createSymbolAnimator(scene, syllabusSymbol);
+            syllabusSymbol.initialize(context, animator);
             syllabSymb.add(syllabusSymbol);
         }
         return syllabSymb;
@@ -147,5 +147,14 @@ public class WordSymbol implements ISymbol {
         return false;
     }
 
-
+    private ValueAnimator createSymbolAnimator(View view, SyllabusSymbol syllabusSymbol) {
+        ValueAnimator animation = ValueAnimator.ofInt(0, 255);
+        animation.setDuration(1000);
+        //   animation.setStartDelay(500);
+        AnimationUpdate listener = new AnimationUpdate(view, syllabusSymbol);
+        animation.addUpdateListener(listener);
+        AccelerateInterpolator interpolator = new AccelerateInterpolator();
+        animation.setInterpolator(interpolator);
+        return animation;
+    }
 }

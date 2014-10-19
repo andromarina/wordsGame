@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import com.words.core.ObjectPlayer;
 
 /**
  * Created by mara on 7/9/14.
@@ -16,17 +17,21 @@ public class PuzzleImageSymbol implements ISymbol {
     private int coordY;
     private int offset = 15;
     private String pictureName;
+    private String soundString;
+    private ObjectPlayer player;
 
-    public PuzzleImageSymbol(String pictureName, Context context) {
+    public PuzzleImageSymbol(String pictureName, Context context, ObjectPlayer player, String soundString) {
         this.pictureName = pictureName;
         initializeImage(context);
+        this.player = player;
+        this.soundString = soundString;
     }
 
     @Override
     public void draw(Context context, Canvas canvas) {
-        int x = canvas.getWidth() - this.img.getWidth() - offset;
-        int y = canvas.getHeight() - this.img.getHeight() - offset;
-        canvas.drawBitmap(img, x, y, null);
+        this.coordX = canvas.getWidth() - this.img.getWidth() - offset;
+        this.coordY = canvas.getHeight() - this.img.getHeight() - offset;
+        canvas.drawBitmap(img, coordX, coordY, null);
     }
 
     @Override
@@ -51,12 +56,25 @@ public class PuzzleImageSymbol implements ISymbol {
 
     @Override
     public boolean contains(int X, int Y) {
+        int centerX = this.coordX + this.img.getWidth() / 2;
+        int centerY = this.coordY + this.img.getHeight() / 2;
+
+        // calculate the radius from the touch to the center
+        double radCircle = Math.sqrt((double) (((centerX - X) * (centerX - X)) + (centerY - Y) * (centerY - Y)));
+
+        if (radCircle < this.img.getWidth() / 2) {
+            return true;
+        }
         return false;
     }
 
     @Override
     public Rect getBoundingBox() {
         return null;
+    }
+
+    public void play() {
+        player.play(soundString);
     }
 
     private void initializeImage(Context context) {

@@ -52,9 +52,10 @@ public class WordsParser {
             JSONObject puzzle = (JSONObject) jsonArray.get(i);
             long id = (Long) puzzle.get("id");
             String word = (String) puzzle.get("word");
-            String wordSound = (String) puzzle.get("sound");
+            String wordSound = (String) puzzle.get("spelling");
             String pictureName = (String) puzzle.get("picture");
-            PuzzleAttributes puzzleAttributes = new PuzzleAttributes((int) id, word, wordSound, pictureName);
+            String objectSound = (String) puzzle.get("sound");
+            PuzzleAttributes puzzleAttributes = new PuzzleAttributes((int) id, word, wordSound, pictureName, objectSound);
             puzzleAttributesArray.add(puzzleAttributes);
         }
         return puzzleAttributesArray;

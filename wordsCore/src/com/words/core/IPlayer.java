@@ -5,5 +5,5 @@ package com.words.core;
  */
 public interface IPlayer {
 
-    public void addToPlaylist(String soundName);
+    public void addToPlaylist(String soundName, IPlayerListener listener);
 }

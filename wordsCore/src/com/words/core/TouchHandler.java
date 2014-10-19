@@ -3,6 +3,7 @@ package com.words.core;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
+import com.words.core.symbols.PuzzleImageSymbol;
 import com.words.core.symbols.SyllabusHolderSymbol;
 import com.words.core.symbols.SyllabusSymbol;
 import com.words.core.symbols.WordSymbol;
@@ -22,15 +23,15 @@ public class TouchHandler implements View.OnTouchListener {
     private int Yprev;
 
     public TouchHandler(Scene scene) {
-       this.scene = scene;
+        this.scene = scene;
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         int eventAction = event.getAction();
 
-        int X = (int)event.getX();
-        int Y = (int)event.getY();
+        int X = (int) event.getX();
+        int Y = (int) event.getY();
 
         switch (eventAction) {
 
@@ -67,6 +68,7 @@ public class TouchHandler implements View.OnTouchListener {
                 }
                 if (isClick == true) {
                     handleOnSyllabusClick(X, Y);
+                    handleImageClick(X, Y);
                 }
                 handleSyllabusPlacement();
                 v.invalidate();
@@ -75,6 +77,14 @@ public class TouchHandler implements View.OnTouchListener {
         // redraw the canvas
         //v.invalidate();
         return true;
+    }
+
+    private void handleImageClick(int X, int Y) {
+        PuzzleImageSymbol imageSymbol = this.scene.getPuzzleImageSymbol();
+
+        if (imageSymbol.contains(X, Y)) {
+            imageSymbol.play();
+        }
     }
 
     private void handleSyllabusPlacement() {
@@ -127,11 +137,11 @@ public class TouchHandler implements View.OnTouchListener {
     }
 
     private boolean isAccidentMovement() {
-//        long currentTime = Calendar.getInstance().getTimeInMillis();
-//        int difference = (int) (currentTime - this.touchStartTime);
-//        if (difference < 300) {
-//            return true;
-//        }
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        int difference = (int) (currentTime - this.touchStartTime);
+        if (difference < 300) {
+            return true;
+        }
         return false;
     }
 
