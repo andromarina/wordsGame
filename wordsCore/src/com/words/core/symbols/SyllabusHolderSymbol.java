@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import com.words.core.R;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
  * Created by mara on 4/22/14.
  */
 public class SyllabusHolderSymbol implements ISymbol {
+    private BitmapDrawable bitmapDrawable;
     private Bitmap img;
     private int coordX;
     private int coordY = 30;
@@ -26,10 +28,12 @@ public class SyllabusHolderSymbol implements ISymbol {
 
     public void initialize(Context context) {
         this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_blue);
+        this.bitmapDrawable = new BitmapDrawable(img);
     }
 
     public void draw(Context context, Canvas canvas) {
-        canvas.drawBitmap(img, this.coordX, this.coordY, null);
+        this.bitmapDrawable.setBounds(getBoundingBox());
+        this.bitmapDrawable.draw(canvas);
     }
 
     @Override
@@ -50,7 +54,7 @@ public class SyllabusHolderSymbol implements ISymbol {
         int height = getHeight();
         int weight = getWidth();
         int offset = 50;
-        Rect rect = new Rect(coordX - offset, coordY - offset, coordX - offset + weight, coordY - offset + height);
+        Rect rect = new Rect(coordX, coordY, coordX + weight, coordY + height);
         return rect;
     }
 
@@ -59,12 +63,12 @@ public class SyllabusHolderSymbol implements ISymbol {
     }
 
     public int getHeight() {
-        return this.img.getHeight();
+        return this.bitmapDrawable.getBitmap().getHeight();
     }
 
 
     public int getWidth() {
-        return this.img.getWidth();
+        return this.bitmapDrawable.getBitmap().getWidth();
     }
 
 
@@ -82,6 +86,22 @@ public class SyllabusHolderSymbol implements ISymbol {
         }
     }
 
+    @Override
+    public void setAlpha(int value) {
+        this.bitmapDrawable.setAlpha(value);
+    }
+
+    @Override
+    public void setScale(float value) {
+        int newWidth = (int) (getWidth() * value);
+        int newHeight = (int) (getHeight() * value);
+        if (newWidth <= 0 || newHeight <= 0) {
+            return;
+        }
+        Bitmap newImg = Bitmap.createBitmap(this.img, 0, 0, newWidth, newHeight);
+        this.bitmapDrawable = new BitmapDrawable(newImg);
+    }
+
     public int getX() {
         return coordX;
     }
@@ -89,11 +109,6 @@ public class SyllabusHolderSymbol implements ISymbol {
     public int getY() {
         return coordY;
     }
-
-  /*  public void animate(View view) {
-        ObjectAnimator anim = createAnimator(view);
-        anim.start();
-    }*/
 
     public void attachToAnimation(SyllabusSymbol symbol) {
         this.attachedSymbol = symbol;
@@ -115,18 +130,4 @@ public class SyllabusHolderSymbol implements ISymbol {
         }
         return null;
     }
-
-  /*  private ObjectAnimator createAnimator(View view) {
-
-        int offset = 50;
-        Random rand = new Random();
-        this.coordY = rand.nextInt(100 - offset) + offset;
-        ObjectAnimator anim = ObjectAnimator.ofInt(this, "y", offset, coordY);
-        anim.setDuration(1500);
-        anim.setRepeatCount(ValueAnimator.INFINITE);
-        anim.setRepeatMode(ValueAnimator.REVERSE);
-        AnimationUpdate listener = new AnimationUpdate(view,);
-        anim.addUpdateListener(listener);
-        return anim;
-    }*/
 }

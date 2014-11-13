@@ -1,6 +1,5 @@
 package com.words.core.symbols;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,7 +12,7 @@ import com.words.core.Syllabus;
 /**
  * Created by mara on 3/24/14.
  */
-public class SyllabusSymbol implements ISymbol, IPlayerListener {
+public class SyllabusSymbol implements ISymbol {
 
     private BitmapDrawable bitmapDrawable;
     private Bitmap img;
@@ -28,22 +27,24 @@ public class SyllabusSymbol implements ISymbol, IPlayerListener {
     private IPlayer player;
     private String soundName;
     private Paint textPaint;
-    private ValueAnimator animator;
+    private IPlayerListener listener;
+    private Matrix matrix;
 
     public SyllabusSymbol(Syllabus syllabus, String soundName, IPlayer player) {
         this.syllabus = syllabus;
         this.soundName = soundName;
         this.player = player;
+        this.matrix = new Matrix();
     }
 
-    public void initialize(Context context, ValueAnimator animator) {
+    public void initialize(Context context, IPlayerListener listener) {
         //selected size in Android assets Studio 75px
         this.img = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_letters_yellow);
-        this.bitmapDrawable = new BitmapDrawable(context.getResources(), img);
+        this.bitmapDrawable = new BitmapDrawable(img);
         createPaintText();
         setAlpha(0);
         this.textPaint.setAlpha(0);
-        this.animator = animator;
+        this.listener = listener;
     }
 
     public void onTouchStart() {
@@ -64,8 +65,6 @@ public class SyllabusSymbol implements ISymbol, IPlayerListener {
         this.bitmapDrawable.setBounds(getBoundingBox());
         this.bitmapDrawable.draw(canvas);
         // canvas.drawBitmap(img, this.coordX, this.coordY, null);
-        Log.d("DRAW", "draw called");
-
         String text = this.syllabus.getString();
         //TODO: handle font size
         int testWidth = (int) this.textPaint.measureText(text);
@@ -73,6 +72,7 @@ public class SyllabusSymbol implements ISymbol, IPlayerListener {
         int x = getWidth() / 2 - testWidth / 2;
         int y = getHeight() / 2 + textHeight / 4;
         canvas.drawText(text, coordX + x, coordY + y, this.textPaint);
+        // canvas.drawRect(getExtendedBoundingBox(), this.textPaint);
     }
 
     @Override
@@ -86,13 +86,24 @@ public class SyllabusSymbol implements ISymbol, IPlayerListener {
     }
 
     public void setAlpha(int value) {
-        Log.d("Words", "Alpha is " + value);
+
         this.bitmapDrawable.setAlpha(value);
         this.textPaint.setAlpha(value);
     }
 
-    public void animate() {
-        this.animator.start();
+    public void setScale(float value) {
+        //  matrix.postScale(getWidth() * value, getHeight() * value);
+        matrix.setScale(getWidth() * value, getHeight() * value);
+        int newWidth = (int) (getWidth());
+        int newHeight = (int) (getHeight());
+        if (newWidth <= 0 || newHeight <= 0) {
+            return;
+        }
+        Log.d("Anim", "Create Bitmap before");
+        Bitmap newImg = Bitmap.createBitmap(this.img, 0, 0, newWidth, newHeight);
+        Log.d("Anim", "Create Bitmap called");
+        this.bitmapDrawable = new BitmapDrawable(newImg);
+        this.textPaint.setTextSize(this.textPaint.getTextSize() * value);
     }
 
     public void saveCoordinates() {
@@ -150,6 +161,15 @@ public class SyllabusSymbol implements ISymbol, IPlayerListener {
         return rect;
     }
 
+    public Rect getExtendedBoundingBox() {
+        int left = getBoundingBox().left - 20;
+        int right = getBoundingBox().right + 20;
+        int top = getBoundingBox().top - 20;
+        int bottom = getBoundingBox().bottom + 20;
+        Rect rect = new Rect(left, top, right, bottom);
+        return rect;
+    }
+
     public int getHeight() {
         return this.bitmapDrawable.getBitmap().getHeight();
     }
@@ -173,8 +193,12 @@ public class SyllabusSymbol implements ISymbol, IPlayerListener {
         this.isAttached = true;
     }
 
+    public void setListener(IPlayerListener listener) {
+        this.listener = listener;
+    }
+
     public void play() {
-        this.player.addToPlaylist(this.soundName, this);
+        this.player.addToPlaylist(this.soundName, this.listener);
     }
 
     public boolean isAttached() {
@@ -192,10 +216,5 @@ public class SyllabusSymbol implements ISymbol, IPlayerListener {
         this.textPaint.setStyle(Paint.Style.FILL);
         this.textPaint.setAntiAlias(true);
         this.textPaint.setColor(Color.BLACK);
-    }
-
-    @Override
-    public void onSoundStart() {
-        animate();
     }
 }

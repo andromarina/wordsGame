@@ -6,8 +6,8 @@
         "puzzles": [
           {
             "id": 1,
-            "word": "ко-ро-ва",
-            "spelling": "ko-ro-va",
+            "word": "ко",
+            "spelling": "ko",
             "picture": "ic_cow",
             "sound":"cow.wav"
           },
@@ -16,28 +16,28 @@
             "word": "ку-ри-ца",
             "spelling": "ku-ri-ca",
             "picture": "ic_chiken",
-            "sound":""
+            "sound":"chicken.mp3"
           },
           {
             "id": 3,
             "word": "ло-ша-дка",
             "spelling": "lo-sha-dka",
             "picture": "ic_horse",
-            "sound":""
+            "sound":"horse.mp3"
           },
           {
             "id": 4,
             "word": "по-ро-сё-нок",
             "spelling": "po-ro-sjo-nok",
             "picture": "ic_pig",
-            "sound":""
+            "sound":"pig.mp3"
           },
           {
             "id": 5,
             "word": "ли-си-ца",
             "spelling": "li-si-ca",
             "picture": "ic_fox",
-            "sound":""
+            "sound":"fox.mp3"
           }
         ]
       }

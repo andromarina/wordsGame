@@ -74,6 +74,16 @@ public class WordHolderSymbol implements ISymbol {
     }
 
     @Override
+    public void setAlpha(int value) {
+
+    }
+
+    @Override
+    public void setScale(float value) {
+
+    }
+
+    @Override
     public boolean contains(int X, int Y) {
         return false;
     }

@@ -1,13 +1,14 @@
 package com.words.core.symbols;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import com.words.core.*;
+import com.words.core.IPlayer;
+import com.words.core.Scene;
+import com.words.core.Syllabus;
+import com.words.core.Word;
+import com.words.core.animations.OnFirstStartAnimation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,6 +64,16 @@ public class WordSymbol implements ISymbol {
     }
 
     @Override
+    public void setAlpha(int value) {
+
+    }
+
+    @Override
+    public void setScale(float value) {
+
+    }
+
+    @Override
     public boolean contains(int X, int Y) {
         return false;
     }
@@ -86,6 +97,7 @@ public class WordSymbol implements ISymbol {
 
         for (SyllabusSymbol syllabusSymbol : shuffledArray) {
             Point p = generateRandomPoint(syllabusSymbol, minX, maxX, displayHeight);
+            // setRandomPositionForSymbol(syllabusSymbol, maxX, displayHeight);
             syllabusSymbol.move(p.x, p.y);
             minX = maxX;
             maxX = maxX + segmentLength;
@@ -115,8 +127,8 @@ public class WordSymbol implements ISymbol {
         for (int i = 0; i < syllabuses.size(); ++i) {
             Syllabus syllabus = syllabuses.get(i);
             SyllabusSymbol syllabusSymbol = new SyllabusSymbol(syllabus, soundNames[i], player);
-            ValueAnimator animator = createSymbolAnimator(scene, syllabusSymbol);
-            syllabusSymbol.initialize(context, animator);
+            OnFirstStartAnimation firstAnimation = new OnFirstStartAnimation(scene, syllabusSymbol);
+            syllabusSymbol.initialize(context, firstAnimation);
             syllabSymb.add(syllabusSymbol);
         }
         return syllabSymb;
@@ -127,11 +139,33 @@ public class WordSymbol implements ISymbol {
         int minX = minWidth + symbol.getWidth() / 3;
         int maxX = (int) (maxWidth * 0.2);
         int x = ((minX + maxX) / 2) + rand.nextInt(50);
-        int minY = (int) (maxHeight * 0.4);
-        int maxY = maxHeight - symbol.getHeight() / 2;
+        int minY = (int) (maxHeight * 0.3);
+        int maxY = (int) (maxHeight - symbol.getHeight());
         int y = minY + rand.nextInt(maxY - minY + 1);
         Point point = new Point(x, y);
         return point;
+    }
+
+    private void setRandomPositionForSymbol(SyllabusSymbol symbol, int maxWidth, int maxHeight) {
+        Rect freeArea = getFreeAreaForSymbols(symbol, maxWidth, maxHeight);
+        Random rand = new Random();
+        while (!freeArea.contains(symbol.getBoundingBox()) && isOverlap(symbol)) {
+            int randX = freeArea.left + rand.nextInt(freeArea.right - freeArea.left + 1);
+            int randY = freeArea.bottom + rand.nextInt(freeArea.top - freeArea.bottom + 1);
+
+            symbol.setX(randX);
+            symbol.setY(randY);
+        }
+    }
+
+    private Rect getFreeAreaForSymbols(SyllabusSymbol symbol, int maxWidth, int maxHeight) {
+        int leftX = symbol.getWidth() / 2 + 10;
+        int topY = maxHeight - maxHeight / 4;
+        int rightX = maxWidth / 2;
+        int bottomY = symbol.getWidth() / 2 + 10;
+
+        Rect rect = new Rect(leftX, topY, rightX, bottomY);
+        return rect;
     }
 
     private boolean isOverlap(SyllabusSymbol symbol) {
@@ -147,14 +181,4 @@ public class WordSymbol implements ISymbol {
         return false;
     }
 
-    private ValueAnimator createSymbolAnimator(View view, SyllabusSymbol syllabusSymbol) {
-        ValueAnimator animation = ValueAnimator.ofInt(0, 255);
-        animation.setDuration(1000);
-        //   animation.setStartDelay(500);
-        AnimationUpdate listener = new AnimationUpdate(view, syllabusSymbol);
-        animation.addUpdateListener(listener);
-        AccelerateInterpolator interpolator = new AccelerateInterpolator();
-        animation.setInterpolator(interpolator);
-        return animation;
-    }
 }

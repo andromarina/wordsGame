@@ -19,6 +19,10 @@ public interface ISymbol {
 
     public void setY(int newY);
 
+    public void setAlpha(int value);
+
+    public void setScale(float value);
+
     public boolean contains(int X, int Y);
 
     public Rect getBoundingBox();

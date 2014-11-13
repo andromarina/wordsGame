@@ -1,10 +1,14 @@
 package com.my.words;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 import com.words.core.*;
+import com.words.core.animations.DisappearAnimation;
+import com.words.core.animations.OnClickAnimation;
 import com.words.core.gameentities.Game;
 import com.words.core.gameentities.Level;
 import com.words.core.gameentities.WordsParser;
@@ -15,7 +19,7 @@ import java.util.ArrayList;
 /**
  * Created by mara on 3/24/14.
  */
-public class Configurator implements IWordListener{
+public class Configurator implements IWordListener, AnimatorSet.AnimatorListener {
     private Word puzzleWord;
     private WordSymbol puzzleWordSymbol;
     private WordHolderSymbol wordHolderSymbol;
@@ -78,18 +82,12 @@ public class Configurator implements IWordListener{
 
     @Override
     public void finished() {
-        this.player.addToPlaylist("TaDa", null);
 
-        if (this.level.isCompleted(solvedWordsCounter)) {
-            finishLevel();
-            return;
-        }
-        ++solvedWordsCounter;
-        saveProgress();
-        scene.removeAllSymbols();
-        createWord();
-        addSymbolsToScene();
-        initializeWord();
+        DisappearAnimation animation = new DisappearAnimation(this.scene, this.puzzleWordSymbol, this.wordHolderSymbol);
+        animation.setListener(this);
+        animation.play();
+
+        this.player.addToPlaylist("TaDa", null);
     }
 
     private void createWord() {
@@ -120,6 +118,16 @@ public class Configurator implements IWordListener{
         bindSyllabusSymbolsToWordHolderSymbol();
         this.puzzleWordSymbol.presentWord();
         this.puzzleWordSymbol.shuffle(dm.widthPixels, dm.heightPixels);
+        setOnClickListenersToSymbols();
+    }
+
+    private void setOnClickListenersToSymbols() {
+        ArrayList<SyllabusSymbol> symbols = this.puzzleWordSymbol.getSyllabusSymbols();
+
+        for (SyllabusSymbol symbol : symbols) {
+            OnClickAnimation listener = new OnClickAnimation(this.scene, symbol);
+            symbol.setListener(listener);
+        }
     }
 
     private void addSymbolsToScene() {
@@ -143,5 +151,36 @@ public class Configurator implements IWordListener{
         ++levelsCounter;
         saveProgress();
         this.level = this.game.getLevelById(levelsCounter);
+    }
+
+    @Override
+    public void onAnimationStart(Animator animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animator animation) {
+        this.scene.invalidate();
+        if (this.level.isCompleted(solvedWordsCounter)) {
+            finishLevel();
+            return;
+        }
+
+        ++solvedWordsCounter;
+        saveProgress();
+        scene.removeAllSymbols();
+        createWord();
+        addSymbolsToScene();
+        initializeWord();
+    }
+
+    @Override
+    public void onAnimationCancel(Animator animation) {
+
+    }
+
+    @Override
+    public void onAnimationRepeat(Animator animation) {
+
     }
 }

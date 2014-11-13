@@ -9,12 +9,13 @@ import java.io.IOException;
 /**
  * Created by mara on 4/27/14.
  */
-public class ObjectPlayer implements IPlayer {
+public class ObjectPlayer implements IPlayer, MediaPlayer.OnCompletionListener {
     private MediaPlayer mp;
     private Context context;
 
     public ObjectPlayer(Context context) {
         this.mp = new MediaPlayer();
+        this.mp.setOnCompletionListener(this);
         this.context = context;
     }
 
@@ -40,5 +41,11 @@ public class ObjectPlayer implements IPlayer {
     @Override
     public void addToPlaylist(String soundName, IPlayerListener listener) {
 
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mp.stop();
+        mp.reset();
     }
 }

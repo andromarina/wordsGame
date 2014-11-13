@@ -55,6 +55,16 @@ public class PuzzleImageSymbol implements ISymbol {
     }
 
     @Override
+    public void setAlpha(int value) {
+
+    }
+
+    @Override
+    public void setScale(float value) {
+
+    }
+
+    @Override
     public boolean contains(int X, int Y) {
         int centerX = this.coordX + this.img.getWidth() / 2;
         int centerY = this.coordY + this.img.getHeight() / 2;

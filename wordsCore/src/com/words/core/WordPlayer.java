@@ -64,6 +64,7 @@ public class WordPlayer implements MediaPlayer.OnCompletionListener, IPlayer {
         play(next.soundName, next.listener);
     }
 
+
     private void preparePlayer(String fileName) {
         try {
             AssetFileDescriptor afd;

@@ -1,17 +1,17 @@
-package com.words.core;
+package com.words.core.animations;
 
 import android.animation.ValueAnimator;
 import android.view.View;
-import com.words.core.symbols.SyllabusSymbol;
+import com.words.core.symbols.ISymbol;
 
 /**
  * Created by mara on 5/18/14.
  */
-public class AnimationUpdate implements ValueAnimator.AnimatorUpdateListener {
+public class AlphaAnimationUpdate implements ValueAnimator.AnimatorUpdateListener {
     private View view;
-    private SyllabusSymbol symbol;
+    private ISymbol symbol;
 
-    public AnimationUpdate(View view, SyllabusSymbol symbol) {
+    public AlphaAnimationUpdate(View view, ISymbol symbol) {
         this.view = view;
         this.symbol = symbol;
     }

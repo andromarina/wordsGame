@@ -139,7 +139,7 @@ public class TouchHandler implements View.OnTouchListener {
     private boolean isAccidentMovement() {
         long currentTime = Calendar.getInstance().getTimeInMillis();
         int difference = (int) (currentTime - this.touchStartTime);
-        if (difference < 300) {
+        if (difference < 200) {
             return true;
         }
         return false;
