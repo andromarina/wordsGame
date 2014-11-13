@@ -6,8 +6,8 @@
         "puzzles": [
           {
             "id": 1,
-            "word": "ко",
-            "spelling": "ko",
+            "word": "ко-ро-ва",
+            "spelling": "ko-ro-va",
             "picture": "ic_cow",
             "sound":"cow.wav"
           },
