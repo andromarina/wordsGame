@@ -9,35 +9,75 @@
             "word": "ко-ро-ва",
             "spelling": "ko-ro-va",
             "picture": "ic_cow",
-            "sound":"cow.wav"
+            "sound": "cow.wav"
           },
           {
             "id": 2,
             "word": "ку-ри-ца",
             "spelling": "ku-ri-ca",
             "picture": "ic_chiken",
-            "sound":"chicken.mp3"
+            "sound": "chicken.mp3"
           },
           {
             "id": 3,
             "word": "ло-ша-дка",
             "spelling": "lo-sha-dka",
             "picture": "ic_horse",
-            "sound":"horse.mp3"
+            "sound": "horse.mp3"
           },
           {
             "id": 4,
             "word": "по-ро-сё-нок",
             "spelling": "po-ro-sjo-nok",
             "picture": "ic_pig",
-            "sound":"pig.mp3"
+            "sound": "pig.mp3"
           },
           {
             "id": 5,
             "word": "ли-си-ца",
             "spelling": "li-si-ca",
             "picture": "ic_fox",
-            "sound":"fox.mp3"
+            "sound": "fox.mp3"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "puzzles": [
+          {
+            "id": 1,
+            "word": "пче-ла",
+            "spelling": "pche-la",
+            "picture": "bee",
+            "sound": ""
+          },
+          {
+            "id": 2,
+            "word": "я-ще-ри-ца",
+            "spelling": "ja-she-ri-ca",
+            "picture": "lizard",
+            "sound": ""
+          },
+          {
+            "id": 3,
+            "word": "че-ре-па-ха",
+            "spelling": "che-re-pa-ha",
+            "picture": "tortoise",
+            "sound": ""
+          },
+          {
+            "id": 4,
+            "word": "у-ли-тка",
+            "spelling": "u-li-tka",
+            "picture": "snail",
+            "sound": ""
+          },
+          {
+            "id": 5,
+            "word": "гу-се-ни-ца",
+            "spelling": "gu-se-ni-ca",
+            "picture": "caterpillar",
+            "sound": ""
           }
         ]
       }

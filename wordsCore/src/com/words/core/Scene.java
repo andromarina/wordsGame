@@ -1,6 +1,7 @@
 package com.words.core;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.view.View;
 import com.words.core.symbols.ISymbol;
@@ -27,6 +28,12 @@ public class Scene extends View {
 
     public void addSymbol(ISymbol symbol) {
         this.symbols.add(symbol);
+    }
+
+    public void setBackground(String pictureName) {
+        Resources res = context.getResources();
+        int drawableId = res.getIdentifier("drawable/" + pictureName, "drawable", context.getPackageName());
+        setBackgroundResource(drawableId);
     }
 
     @Override

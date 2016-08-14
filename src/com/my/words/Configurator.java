@@ -137,13 +137,13 @@ public class Configurator implements IWordListener, AnimatorSet.AnimatorListener
     }
 
     private void finishLevel() {
-        Toast levelFinished = Toast.makeText(WordApplication.getContext(), R.string.level_finished, 3);
-        levelFinished.show();
+
         solvedWordsCounter = 1;
         if (this.game.isFinished(levelsCounter)) {
             Toast gameFinished = Toast.makeText(WordApplication.getContext(), R.string.game_finished, 3);
             gameFinished.show();
             levelsCounter = 1;
+            scene.setBackground("backgr");
             saveProgress();
             deinitialize();
             return;
@@ -151,6 +151,11 @@ public class Configurator implements IWordListener, AnimatorSet.AnimatorListener
         ++levelsCounter;
         saveProgress();
         this.level = this.game.getLevelById(levelsCounter);
+        scene.removeAllSymbols();
+        scene.setBackground("backgr_" + levelsCounter);
+        createWord();
+        addSymbolsToScene();
+        initializeWord();
     }
 
     @Override
